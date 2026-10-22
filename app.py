@@ -51,11 +51,28 @@ app.config["SECRET_KEY"] = SECRET_KEY
 app.config["WTF_CSRF_SECRET_KEY"] = SECRET_KEY
 
 # Database configuration.
-os.makedirs(app.instance_path, exist_ok=True)
+database_url = os.environ.get("DATABASE_URL")
 
-app.config["SQLALCHEMY_DATABASE_URI"] = (
-    "sqlite:///" + os.path.join(app.instance_path, "memory_care.db")
-)
+if database_url:
+    # Normalize Render's PostgreSQL URL for SQLAlchemy.
+    if database_url.startswith("postgres://"):
+        database_url = database_url.replace(
+            "postgres://", "postgresql://", 1
+        )
+    if database_url.startswith("postgresql://"):
+        database_url = database_url.replace(
+            "postgresql://", "postgresql+psycopg://", 1
+        )
+
+    app.config["SQLALCHEMY_DATABASE_URI"] = database_url
+else:
+    # Keep using the existing local SQLite database.
+    os.makedirs(app.instance_path, exist_ok=True)
+
+    app.config["SQLALCHEMY_DATABASE_URI"] = (
+        "sqlite:///" + os.path.join(app.instance_path, "memory_care.db")
+    )
+
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # Session-cookie security.
