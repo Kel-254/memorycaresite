@@ -1583,15 +1583,18 @@ def logout():
 
 
 # -------------------------
+# DATABASE INITIALIZATION
+# -------------------------
+
+with app.app_context():
+    db.create_all()
+
+
+# -------------------------
 # START APPLICATION
 # -------------------------
 
-
 if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
-
     app.run(
         debug=not IS_PRODUCTION
     )
-
