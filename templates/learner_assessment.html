@@ -1,0 +1,342 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Course Assessment | Memory Care</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap"
+          rel="stylesheet">
+</head>
+
+<body class="learner-dashboard learner-home mc-exam-page">
+
+    <!-- MOBILE LEARNER MENU BUTTON -->
+    <button type="button"
+            class="dashboard-mobile-menu"
+            id="dashboardMobileMenu"
+            aria-label="Open navigation menu"
+            aria-controls="dashboardSidebar"
+            aria-expanded="false">
+        ☰
+    </button>
+
+    <aside class="dashboard-sidebar" id="dashboardSidebar">
+        <a href="{{ url_for('dashboard') }}" class="brand">
+            <span class="brand-mark">M</span>
+            <span class="brand-name">
+                Memory <strong>Care</strong>
+                <small>LEARNING PORTAL</small>
+            </span>
+        </a>
+
+        <div class="sidebar-caption">MY LEARNING</div>
+
+        <nav class="dashboard-nav">
+            <a href="{{ url_for('dashboard') }}"
+               class="dashboard-nav-link">
+                <span>⌂</span> Dashboard
+            </a>
+
+            <a href="{{ url_for('learner_courses') }}"
+               class="dashboard-nav-link">
+                <span>▤</span> My Courses
+            </a>
+
+            <a href="{{ url_for('learner_study_materials') }}"
+               class="dashboard-nav-link">
+                <span>▣</span> Study Materials
+            </a>
+
+            <a href="{{ url_for('learner_assessment') }}"
+               class="dashboard-nav-link active">
+                <span>✓</span> Assessments
+            </a>
+
+            <a href="{{ url_for('learner_progress') }}"
+               class="dashboard-nav-link">
+                <span>◷</span> Learning Progress
+            </a>
+
+            {% if user.is_admin %}
+            <a href="{{ url_for('admin_dashboard') }}"
+               class="dashboard-nav-link">
+                <span>⚙</span> Admin Portal
+            </a>
+            {% endif %}
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="sidebar-help">
+                <span class="help-star">✦</span>
+                <strong>You've got this!</strong>
+                <p>Take your time, read each question carefully, and do your best.</p>
+            </div>
+
+            <form method="POST" action="{{ url_for('logout') }}">
+                <input type="hidden" name="csrf_token"
+                       value="{{ csrf_token() }}">
+                <button type="submit" class="dashboard-logout">
+                    ↗ Sign out
+                </button>
+            </form>
+        </div>
+    </aside>
+
+     <!-- MOBILE SIDEBAR OVERLAY -->
+    <div class="dashboard-sidebar-overlay"
+         id="dashboardSidebarOverlay"
+         aria-hidden="true"></div>
+
+    <main class="dashboard-main mc-exam-main">
+        
+        <div class="mc-assessment-back-row">
+            <a href="{{ url_for('learner_course_modules', course_id=course.id) }}"
+               class="mc-assessment-back-button">
+              ← Return to Modules
+            </a>
+        </div>
+
+        <header class="dashboard-topbar">
+            <div>
+                <span class="dashboard-date-label">
+                    YOUR PERSONAL LEARNING SPACE
+                </span>
+                <p>Memory Care / Assessments</p>
+            </div>
+
+            <div class="profile-chip">
+                <div class="profile-avatar">
+                    {{ user.full_name[0]|upper }}
+                </div>
+                <div class="profile-info">
+                    <strong>{{ user.full_name }}</strong>
+                    <span>Learner</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- ASSESSMENT HEADING -->
+        <section class="mc-exam-heading">
+
+            <span class="dashboard-eyebrow">KNOWLEDGE CHECK</span>
+
+            <h1>{{ course.title }}</h1>
+
+            <p>
+                Read every question and select one answer.
+                Your responses will be marked when you submit the assessment.
+            </p>
+
+            <div class="mc-exam-meta">
+                <span>✓ Multiple-choice questions</span>
+                <span>◎ Pass mark: 80%</span>
+                <span>▤ {{ questions|length }} questions</span>
+            </div>
+        </section>
+
+        {% if questions %}
+
+        <!-- NEW ASSESSMENT OVERVIEW PANEL -->
+        <section class="mc-assessment-overview">
+
+            <div class="mc-overview-intro">
+                <span class="mc-overview-icon">✦</span>
+
+                <div>
+                    <h3>Ready to Test Your Knowledge?</h3>
+                    <p>
+                        Stay focused, take your time, and do your best.
+                    </p>
+                </div>
+            </div>
+
+            <div class="mc-overview-stats">
+
+                <div class="mc-overview-stat">
+                    <span class="mc-stat-icon">▤</span>
+                    <div>
+                        <strong>{{ questions|length }}</strong>
+                        <small>Total Questions</small>
+                    </div>
+                </div>
+
+                <div class="mc-overview-stat">
+                    <span class="mc-stat-icon">✓</span>
+                    <div>
+                        <strong>80%</strong>
+                        <small>Pass Mark</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mc-overview-note">
+                <span>✧</span> Review your answers before submitting.
+            </div>
+        </section>
+
+        <!-- ASSESSMENT FORM -->
+        <form method="POST"
+              action="{{ url_for('submit_assessment', course_id=course.id) }}"
+              class="mc-exam-form">
+
+            <input type="hidden" name="csrf_token"
+                   value="{{ csrf_token() }}">
+
+            <div class="mc-exam-instructions">
+                <strong>Instructions</strong>
+                <p>
+                    Choose the single best answer for each question.
+                    Review your selections before submitting.
+                </p>
+            </div>
+
+            {% for question in questions %}
+
+            <div class="mc-question-card">
+
+                <div class="mc-question-legend">
+                    <span class="mc-question-number">
+                        {{ "%02d"|format(loop.index) }}
+                    </span>
+
+                    <span class="mc-question-text">
+                        {{ question.text }}
+                    </span>
+                </div>
+
+                <div class="mc-answer-list">
+
+                    <label class="mc-answer-option">
+                        <input type="radio"
+                               name="question_{{ question.id }}"
+                               value="A"
+                               required>
+                        <span class="mc-answer-letter">A</span>
+                        <span class="mc-answer-text">
+                            {{ question.option_a }}
+                        </span>
+                    </label>
+
+                    <label class="mc-answer-option">
+                        <input type="radio"
+                               name="question_{{ question.id }}"
+                               value="B">
+                        <span class="mc-answer-letter">B</span>
+                        <span class="mc-answer-text">
+                            {{ question.option_b }}
+                        </span>
+                    </label>
+
+                    <label class="mc-answer-option">
+                        <input type="radio"
+                               name="question_{{ question.id }}"
+                               value="C">
+                        <span class="mc-answer-letter">C</span>
+                        <span class="mc-answer-text">
+                            {{ question.option_c }}
+                        </span>
+                    </label>
+
+                    <label class="mc-answer-option">
+                        <input type="radio"
+                               name="question_{{ question.id }}"
+                               value="D">
+                        <span class="mc-answer-letter">D</span>
+                        <span class="mc-answer-text">
+                            {{ question.option_d }}
+                        </span>
+                    </label>
+
+                </div>
+            </div>
+
+            {% endfor %}
+
+            <!-- SUBMIT PANEL -->
+            <div class="mc-exam-submit-panel">
+                <div>
+                    <strong>Ready to submit?</strong>
+                    <p>Make sure you have answered every question.</p>
+                </div>
+
+                <button type="submit" class="mc-exam-submit-button">
+                    Submit Assessment →
+                </button>
+            </div>
+
+        </form>
+
+        {% else %}
+
+        <section class="mc-exam-instructions">
+            <h2>No questions available</h2>
+            <p>
+                Your administrator has not added questions to this course yet.
+            </p>
+        </section>
+
+        {% endif %}
+
+        <footer class="dashboard-footer">
+            <span>MEMORY CARE</span>
+            <p>Learn with purpose. Progress with confidence.</p>
+        </footer>
+
+   
+    </main>
+
+    <!-- MOBILE LEARNER SIDEBAR SCRIPT -->
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const menuButton = document.getElementById("dashboardMobileMenu");
+        const sidebar = document.getElementById("dashboardSidebar");
+        const overlay = document.getElementById("dashboardSidebarOverlay");
+
+        if (!menuButton || !sidebar || !overlay) return;
+
+        function openSidebar() {
+            document.body.classList.add("sidebar-open");
+            menuButton.setAttribute("aria-expanded", "true");
+            menuButton.setAttribute("aria-label", "Close navigation menu");
+            overlay.setAttribute("aria-hidden", "false");
+        }
+
+        function closeSidebar() {
+            document.body.classList.remove("sidebar-open");
+            menuButton.setAttribute("aria-expanded", "false");
+            menuButton.setAttribute("aria-label", "Open navigation menu");
+            overlay.setAttribute("aria-hidden", "true");
+        }
+
+        menuButton.addEventListener("click", function () {
+            if (document.body.classList.contains("sidebar-open")) {
+                closeSidebar();
+            } else {
+                openSidebar();
+            }
+        });
+
+        overlay.addEventListener("click", closeSidebar);
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") closeSidebar();
+        });
+
+        sidebar.querySelectorAll("a").forEach(function (link) {
+            link.addEventListener("click", closeSidebar);
+        });
+
+        window.addEventListener("resize", function () {
+            if (window.innerWidth > 768) closeSidebar();
+        });
+    });
+    </script>
+
+</body>
+</html>

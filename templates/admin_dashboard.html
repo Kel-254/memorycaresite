@@ -1,0 +1,257 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Care | Administrator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="learner-dashboard">
+
+    <!-- Sidebar overlay for small screens -->
+    <div class="mc-sidebar-overlay" id="mcSidebarOverlay"></div>
+
+    <!-- ADMIN SIDEBAR -->
+    <aside class="mc-admin-sidebar" id="mcAdminSidebar">
+
+        <a href="{{ url_for('admin_dashboard') }}" class="mc-sidebar-brand">
+            <span class="mc-sidebar-logo">MC</span>
+            <span class="mc-sidebar-brand-text">
+                <strong>MEMORY CARE</strong>
+                <small>ADMINISTRATION</small>
+            </span>
+        </a>
+
+        <div class="mc-sidebar-divider"></div>
+
+        <p class="mc-sidebar-heading">WORKSPACE</p>
+
+        <nav class="mc-sidebar-nav" aria-label="Main navigation">
+
+            <a href="{{ url_for('admin_dashboard') }}"
+               class="mc-sidebar-link active"
+               aria-current="page">
+                <span class="mc-sidebar-icon">⌂</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{{ url_for('admin_learners') }}"
+               class="mc-sidebar-link">
+                <span class="mc-sidebar-icon">♙</span>
+                <span>Learner Management</span>
+            </a>
+
+            <a href="{{ url_for('dashboard') }}" class="mc-sidebar-link">
+                <span class="mc-sidebar-icon">⌂</span>
+                <span>Learner Dashboard</span>
+            </a>
+
+        </nav>
+
+        <p class="mc-sidebar-heading mc-sidebar-heading-spaced">
+            CONFIGURATION
+        </p>
+
+        <nav class="mc-sidebar-nav" aria-label="Configuration">
+
+            <a href="{{ url_for('admin_settings') }}"
+               class="mc-sidebar-link">
+                <span class="mc-sidebar-icon">⚙</span>
+                <span>Settings</span>
+            </a>
+
+        </nav>
+
+        <div class="mc-sidebar-bottom">
+
+            <div class="mc-sidebar-message">
+                <span class="mc-sidebar-message-icon">✦</span>
+                <div>
+                    <strong>Memory Care</strong>
+                    <small>Learning with care.</small>
+                </div>
+            </div>
+
+            <form action="{{ url_for('logout') }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <button type="submit" class="mc-sidebar-signout">
+                    <span class="mc-sidebar-icon">↪</span>
+                    <span>Sign out</span>
+                </button>
+            </form>
+
+        </div>
+
+    </aside>
+
+    <!-- MAIN DASHBOARD -->
+    <main class="admin-page">
+
+        <header class="admin-topbar">
+
+            <div class="mc-admin-brand-group">
+
+                <button type="button"
+                        class="mc-sidebar-toggle"
+                        id="mcSidebarToggle"
+                        aria-label="Open navigation menu"
+                        aria-controls="mcAdminSidebar"
+                        aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+                <a href="{{ url_for('admin_dashboard') }}" class="admin-brand">
+                    <span class="admin-brand-icon">MC</span>
+                    <span>
+                        <strong>MEMORY CARE</strong>
+                        <small>ADMINISTRATION</small>
+                    </span>
+                </a>
+
+            </div>
+
+            <div class="admin-user">
+                <span>{{ user.full_name }}</span>
+            </div>
+
+        </header>
+
+        <section class="admin-welcome">
+            <p class="admin-eyebrow">ADMINISTRATOR WORKSPACE</p>
+
+            <h1>Manage <span>Memory Care.</span></h1>
+
+            <p>
+                Organize courses, publish study notes, prepare assessments,
+                and help learners progress through their training.
+            </p>
+        </section>
+
+        <section class="admin-section">
+
+            <div class="admin-section-heading">
+                <div>
+                    <p class="admin-eyebrow">CONTENT MANAGEMENT</p>
+                    <h2>Your learning system</h2>
+                </div>
+
+                <span class="admin-secure-label">Admin access</span>
+            </div>
+
+            <div class="admin-management-grid">
+
+                <article class="admin-management-card">
+                    <div class="admin-card-icon">01</div>
+
+                    <h3>Courses and Modules</h3>
+
+                    <p>
+                        Create and organize courses, arrange modules,
+                        and add study notes for learners.
+                    </p>
+
+                    <a href="{{ url_for('admin_courses') }}"
+                       class="admin-card-status">
+                        Manage Courses &amp; Modules →
+                    </a>
+                </article>
+
+                <article class="admin-management-card cognitive-guide-card">
+                    <div class="admin-card-icon">02</div>
+
+                    <h3>Cognitive Changes Guide</h3>
+
+                    <p>
+                        Access the quick-reference table comparing normal aging,
+                        dementia, and delirium.
+                    </p>
+
+                    <a href="{{ url_for('cognitive_changes_guide') }}"
+                       class="admin-card-status">
+                        Open Quick-Reference Guide →
+                    </a>
+                </article>
+
+                <article class="admin-management-card">
+                    <div class="admin-card-icon">03</div>
+
+                    <h3>Manage Assessments</h3>
+
+                    <p>
+                        Create, edit, and organize assessment questions
+                        for your Memory Care learners.
+                    </p>
+
+                    <a href="{{ url_for('admin_assessments') }}"
+                       class="admin-card-status">
+                        Manage Questions →
+                    </a>
+                </article>
+
+                <article class="admin-management-card">
+                    <div class="admin-card-icon">04</div>
+
+                    <h3>Learner Results</h3>
+
+                    <p>
+                        Review learner scores, percentages, pass and fail
+                        results, and assessment retakes.
+                    </p>
+
+                    <a href="{{ url_for('admin_assessment_results') }}"
+                       class="admin-card-status">
+                        View Results →
+                    </a>
+                </article>
+
+            </div>
+
+        </section>
+
+        <footer class="admin-footer">
+            Memory Care · Administrator Workspace
+        </footer>
+
+    </main>
+
+    <script>
+        const sidebar = document.getElementById("mcAdminSidebar");
+        const toggle = document.getElementById("mcSidebarToggle");
+        const overlay = document.getElementById("mcSidebarOverlay");
+
+        function openSidebar() {
+            sidebar.classList.add("mc-sidebar-open");
+            overlay.classList.add("mc-overlay-visible");
+            toggle.setAttribute("aria-expanded", "true");
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove("mc-sidebar-open");
+            overlay.classList.remove("mc-overlay-visible");
+            toggle.setAttribute("aria-expanded", "false");
+        }
+
+        toggle.addEventListener("click", function () {
+            if (sidebar.classList.contains("mc-sidebar-open")) {
+                closeSidebar();
+            } else {
+                openSidebar();
+            }
+        });
+
+        overlay.addEventListener("click", closeSidebar);
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") {
+                closeSidebar();
+            }
+        });
+    </script>
+
+</body>
+</html>

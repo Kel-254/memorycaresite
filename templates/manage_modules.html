@@ -1,0 +1,219 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Memory Care | Manage Modules</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="manage-modules-page">
+
+    <main class="manage-modules-container">
+
+        <header class="manage-modules-header">
+
+            <a href="{{ url_for('admin_courses') }}" class="back-link">
+                &larr; Back to Courses
+            </a>
+
+            <p class="manage-modules-eyebrow">
+                MEMORY CARE · ADMIN PORTAL
+            </p>
+
+            <h1>Manage Modules</h1>
+
+            <p class="manage-modules-intro">
+                Organize the learning content for this course.
+            </p>
+
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="module-flash {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <section class="manage-modules-course-card">
+
+            <span class="course-label">SELECTED COURSE</span>
+
+            <h2>{{ course.title }}</h2>
+
+            <p>
+                {{ course.description or
+                   "No course description added yet." }}
+            </p>
+
+            <div class="manage-modules-count">
+                {{ course.modules|length }} module(s)
+            </div>
+
+        </section>
+
+        <section class="manage-modules-list-card">
+
+            <div class="manage-modules-list-heading">
+                <div>
+                    <h2>Course Modules</h2>
+                    <p>Your existing modules appear below.</p>
+                </div>
+            </div>
+
+            {% if course.modules %}
+
+                <ol class="manage-modules-list">
+
+                    {% for module in course.modules %}
+
+                        <li class="manage-modules-item">
+
+                            <span class="manage-modules-number">
+                                {{ loop.index }}
+                            </span>
+
+                            
+            <div class="manage-modules-details">
+                <h3>
+                    <a href="{{ url_for('manage_study_notes', module_id=module.id) }}"
+                       class="module-title-link">
+                        {{ module.title }}
+                    </a>
+                </h3>
+
+                <p>
+                    {{ module.description or "Study notes have not been added yet." }}
+                </p>
+
+                <a href="{{ url_for('manage_study_notes', module_id=module.id) }}"
+                   class="module-open-link">
+                        Manage Study Notes →
+                </a>
+            </div>
+        
+
+                        </li>
+
+                    {% endfor %}
+
+                </ol>
+
+            {% else %}
+
+                <div class="manage-modules-empty">
+                    <h3>No modules yet</h3>
+                    <p>
+                        Add the first module to start building this course.
+                    </p>
+                </div>
+
+            {% endif %}
+
+            <div class="manage-modules-actions">
+
+                <button type="button"
+                        class="manage-modules-add-button"
+                        id="showModuleForm">
+                    + Add Module
+                </button>
+
+            </div>
+
+            <form method="POST"
+                  action="{{ url_for('manage_modules',
+                                     course_id=course.id) }}"
+                  class="add-module-form"
+                  id="addModuleForm"
+                  style="display: none;">
+
+                <input type="hidden"
+                       name="csrf_token"
+                       value="{{ csrf_token() }}">
+
+                <h2>Add a New Module</h2>
+
+                <div class="module-form-group">
+                    <label for="moduleTitle">Module Title</label>
+
+                    <input type="text"
+                           id="moduleTitle"
+                           name="title"
+                           placeholder="e.g. Introduction to Dementia"
+                           maxlength="200"
+                           required>
+                </div>
+
+                <div class="module-form-group">
+                    <label for="moduleDescription">
+                        Module Description
+                    </label>
+
+                    <textarea id="moduleDescription"
+                              name="description"
+                              rows="4"
+                              placeholder="Describe what learners will study..."
+                              maxlength="2000"></textarea>
+                </div>
+
+                <div class="module-form-actions">
+
+                    <button type="submit"
+                            class="manage-modules-add-button">
+                        Save Module
+                    </button>
+
+                    <button type="button"
+                            class="module-cancel-button"
+                            id="cancelModuleForm">
+                        Cancel
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+        <footer class="admin-footer">
+            Memory Care · Administrator Workspace
+        </footer>
+
+    </main>
+
+    <script>
+        const showModuleForm =
+            document.getElementById("showModuleForm");
+
+        const addModuleForm =
+            document.getElementById("addModuleForm");
+
+        const cancelModuleForm =
+            document.getElementById("cancelModuleForm");
+
+        const moduleTitle =
+            document.getElementById("moduleTitle");
+
+        showModuleForm.addEventListener("click", function () {
+            addModuleForm.style.display = "block";
+            showModuleForm.style.display = "none";
+            moduleTitle.focus();
+        });
+
+        cancelModuleForm.addEventListener("click", function () {
+            addModuleForm.style.display = "none";
+            showModuleForm.style.display = "inline-flex";
+            addModuleForm.reset();
+        });
+    </script>
+
+</body>
+</html>

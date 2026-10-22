@@ -1,0 +1,490 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Memory Care | Learn With Purpose</title>
+
+    <meta name="description"
+          content="Memory Care helps you study structured notes, test your knowledge, track your progress and master every learning topic.">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap"
+          rel="stylesheet">
+</head>
+
+<body>
+
+    <header class="site-header">
+        <nav class="navbar container">
+
+            <a href="/" class="brand">
+                <span class="brand-mark">
+                    <svg viewBox="0 0 40 40" fill="none"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7 11C12 9 16 11 20 15V32C16 28 12 27 7 29V11Z"
+                              stroke="currentColor" stroke-width="2"
+                              stroke-linejoin="round"/>
+                        <path d="M33 11C28 9 24 11 20 15V32C24 28 28 27 33 29V11Z"
+                              stroke="currentColor" stroke-width="2"
+                              stroke-linejoin="round"/>
+                        <path d="M20 15V32" stroke="currentColor"
+                              stroke-width="2"/>
+                    </svg>
+                </span>
+
+                <span class="brand-name">
+                    Memory <strong>Care</strong>
+                    <small>LEARNING, REFINED</small>
+                </span>
+            </a>
+
+            <div class="nav-links">
+                <a href="#experience">Experience</a>
+                <a href="#method">Our approach</a>
+                <a href="#features">Features</a>
+            </div>
+
+            <div class="nav-actions">
+                <a href="{{ url_for('login') }}" class="login-link">
+                    Sign in
+                </a>
+
+                <a href="{{ url_for('login') }}" class="button button-small">
+                    Get started <span>↗</span>
+                </a>
+            </div>
+
+        </nav>
+    </header>
+
+    <main>
+
+        <section class="hero container" id="experience">
+
+            <div class="hero-copy">
+
+                <div class="eyebrow">
+                    <span class="eyebrow-line"></span>
+                    A MORE THOUGHTFUL WAY TO LEARN
+                </div>
+
+                <h1>
+                    Knowledge is built.
+                    <span>Mastery is earned.</span>
+                </h1>
+
+                <p class="hero-description">
+                    A focused learning space for your notes, assessments
+                    and progress. Study with intention, test your
+                    understanding, and move forward with confidence.
+                </p>
+
+                <div class="hero-actions">
+                    <a href="{{ url_for('login') }}"
+                       class="button button-primary">
+                        Begin your journey
+                        <span>→</span>
+                    </a>
+
+                    <a href="#method" class="text-link">
+                        Discover the method
+                        <span>↓</span>
+                    </a>
+                </div>
+
+                <div class="hero-trust">
+                    <span class="trust-symbol">✓</span>
+                    Structured learning
+                    <span class="trust-divider"></span>
+                    <span class="trust-symbol">✓</span>
+                    Progress you can measure
+                </div>
+
+            </div>
+
+            <div class="hero-visual">
+
+                <div class="visual-orb"></div>
+
+                <div class="visual-label">
+                    <span class="label-dot"></span>
+                    YOUR LEARNING SPACE
+                </div>
+
+                <div class="study-window">
+
+                    <div class="window-top">
+                        <div class="window-brand">
+                            <span class="window-brand-icon">M</span>
+                            <span>My learning</span>
+                        </div>
+
+                        <span class="window-status">PERSONAL SPACE</span>
+                    </div>
+
+                    <div class="window-body">
+
+                        <div class="window-greeting">
+                            <div>
+                                <span class="subtle-label">
+                                    YOUR NEXT CHAPTER
+                                </span>
+                                <h3>Make progress meaningful.</h3>
+                            </div>
+
+                            <div class="greeting-icon">✳</div>
+                        </div>
+
+                        <div class="study-card">
+                            <div class="study-card-icon purple-icon">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <path d="M4 5.5C7 4.5 10 5.5 12 7V20C10 18.5 7 17.5 4 18.5V5.5Z"
+                                          stroke="currentColor"
+                                          stroke-width="1.7"/>
+                                    <path d="M20 5.5C17 4.5 14 5.5 12 7V20C14 18.5 17 17.5 20 18.5V5.5Z"
+                                          stroke="currentColor"
+                                          stroke-width="1.7"/>
+                                </svg>
+                            </div>
+
+                            <div class="study-card-copy">
+                                <strong>Study notes</strong>
+                                <span>Review your learning material</span>
+                            </div>
+
+                            <span class="card-arrow">↗</span>
+                        </div>
+
+                        <div class="study-card">
+                            <div class="study-card-icon peach-icon">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <rect x="5" y="3.5" width="14"
+                                          height="17" rx="2"
+                                          stroke="currentColor"
+                                          stroke-width="1.7"/>
+                                    <path d="M9 8H15M9 12H15M9 16H12"
+                                          stroke="currentColor"
+                                          stroke-width="1.7"
+                                          stroke-linecap="round"/>
+                                </svg>
+                            </div>
+
+                            <div class="study-card-copy">
+                                <strong>Knowledge assessment</strong>
+                                <span>Test your understanding</span>
+                            </div>
+
+                            <span class="card-arrow">↗</span>
+                        </div>
+
+                        <div class="window-progress">
+                            <div class="progress-heading">
+                                <div>
+                                    <span class="subtle-label">
+                                        YOUR STANDARD
+                                    </span>
+                                    <strong>Ready for the next step</strong>
+                                </div>
+
+                                <span class="score-badge">80% pass mark</span>
+                            </div>
+
+                            <div class="mini-progress-track">
+                                <span></span>
+                            </div>
+
+                            <p>Learn · Practise · Master</p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="floating-note">
+                    <span class="floating-note-icon">✦</span>
+                    <div>
+                        <strong>Progress with purpose</strong>
+                        <small>One topic at a time</small>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="principles-strip">
+            <div class="container principles-inner">
+                <div>
+                    <span class="principle-number">01</span>
+                    <span>Learn at your pace</span>
+                </div>
+
+                <div>
+                    <span class="principle-number">02</span>
+                    <span>Prove your understanding</span>
+                </div>
+
+                <div>
+                    <span class="principle-number">03</span>
+                    <span>Progress with confidence</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="features-section section-padding"
+                 id="features">
+
+            <div class="container">
+
+                <div class="section-heading">
+                    <div class="eyebrow">
+                        <span class="eyebrow-line"></span>
+                        THE LEARNING EXPERIENCE
+                    </div>
+
+                    <h2>
+                        Everything in its place.
+                        <span>Every step with purpose.</span>
+                    </h2>
+
+                    <p>
+                        A considered approach to studying that brings
+                        your learning materials, assessments and
+                        achievements together.
+                    </p>
+                </div>
+
+                <div class="feature-grid">
+
+                    <article class="feature-card">
+                        <div class="feature-card-top">
+                            <span class="feature-number">01 / NOTES</span>
+                            <span class="feature-icon purple-icon">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <path d="M5 4.5H15L19 8.5V20H5V4.5Z"
+                                          stroke="currentColor"
+                                          stroke-width="1.7"
+                                          stroke-linejoin="round"/>
+                                    <path d="M15 4.5V9H19M8 12H16M8 16H14"
+                                          stroke="currentColor"
+                                          stroke-width="1.7"
+                                          stroke-linecap="round"/>
+                                </svg>
+                            </span>
+                        </div>
+
+                        <h3>Organised knowledge</h3>
+
+                        <p>
+                            Keep notes and learning topics organised
+                            so you can focus on understanding what matters.
+                        </p>
+
+                        <a href="{{ url_for('login') }}"
+                           class="feature-link">
+                            Explore your workspace <span>→</span>
+                        </a>
+                    </article>
+
+                    <article class="feature-card feature-card-highlight">
+                        <div class="feature-card-top">
+                            <span class="feature-number">02 / ASSESSMENT</span>
+                            <span class="feature-icon peach-icon">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <rect x="5" y="3.5" width="14"
+                                          height="17" rx="2"
+                                          stroke="currentColor"
+                                          stroke-width="1.7"/>
+                                    <path d="M8 9L10 11L14 7M8 15H16"
+                                          stroke="currentColor"
+                                          stroke-width="1.7"
+                                          stroke-linecap="round"
+                                          stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </div>
+
+                        <h3>Meaningful assessments</h3>
+
+                        <p>
+                            Practise with structured questions,
+                            receive a score and identify where
+                            you need more revision.
+                        </p>
+
+                        <a href="{{ url_for('login') }}"
+                           class="feature-link">
+                            Prepare to practise <span>→</span>
+                        </a>
+                    </article>
+
+                    <article class="feature-card">
+                        <div class="feature-card-top">
+                            <span class="feature-number">03 / PROGRESS</span>
+                            <span class="feature-icon green-icon">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <path d="M4 19V12M10 19V5M16 19V9M22 19V3"
+                                          stroke="currentColor"
+                                          stroke-width="2"
+                                          stroke-linecap="round"/>
+                                </svg>
+                            </span>
+                        </div>
+
+                        <h3>Visible progress</h3>
+
+                        <p>
+                            Follow your results, recognise your
+                            achievements and work towards mastering
+                            each topic.
+                        </p>
+
+                        <a href="{{ url_for('login') }}"
+                           class="feature-link">
+                            Track your growth <span>→</span>
+                        </a>
+                    </article>
+
+                </div>
+            </div>
+
+        </section>
+
+        <section class="method-section section-padding" id="method">
+
+            <div class="container method-layout">
+
+                <div class="method-copy">
+                    <div class="eyebrow">
+                        <span class="eyebrow-line"></span>
+                        A CLEAR PATH FORWARD
+                    </div>
+
+                    <h2>
+                        Understanding first.
+                        <span>Mastery next.</span>
+                    </h2>
+
+                    <p>
+                        Memory Care is designed around a simple
+                        principle: move forward when you're ready.
+                        Each topic has its own notes and assessment,
+                        giving you a clear route from learning
+                        to mastery.
+                    </p>
+
+                    <a href="{{ url_for('login') }}"
+                       class="button button-primary">
+                        Start learning <span>→</span>
+                    </a>
+                </div>
+
+                <div class="method-steps">
+
+                    <div class="method-step">
+                        <div class="step-marker">01</div>
+
+                        <div class="step-content">
+                            <span class="step-label">FOUNDATION</span>
+                            <h3>Review your notes</h3>
+                            <p>
+                                Read and understand the material
+                                before attempting the assessment.
+                            </p>
+                        </div>
+
+                        <span class="step-status">LEARN</span>
+                    </div>
+
+                    <div class="method-step">
+                        <div class="step-marker">02</div>
+
+                        <div class="step-content">
+                            <span class="step-label">ASSESSMENT</span>
+                            <h3>Test your knowledge</h3>
+                            <p>
+                                Answer the questions and receive
+                                an automatically calculated score.
+                            </p>
+                        </div>
+
+                        <span class="step-status">PRACTISE</span>
+                    </div>
+
+                    <div class="method-step">
+                        <div class="step-marker step-marker-peach">03</div>
+
+                        <div class="step-content">
+                            <span class="step-label">MASTERY</span>
+                            <h3>Pass and move forward</h3>
+                            <p>
+                                Score 80% or more to unlock the
+                                next step. If you fall short,
+                                revise and retake the test.
+                            </p>
+                        </div>
+
+                        <span class="step-status">PROGRESS</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="closing-section">
+            <div class="container closing-inner">
+                <div>
+                    <span class="closing-label">YOUR NEXT CHAPTER STARTS HERE</span>
+                    <h2>Make every study session count.</h2>
+                    <p>
+                        Bring structure to your learning and
+                        confidence to your progress.
+                    </p>
+                </div>
+
+                <a href="{{ url_for('login') }}"
+                   class="button closing-button">
+                    Enter Memory Care <span>→</span>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+
+            <a href="/" class="brand footer-brand">
+                <span class="brand-mark">
+                    <svg viewBox="0 0 40 40" fill="none">
+                        <path d="M7 11C12 9 16 11 20 15V32C16 28 12 27 7 29V11Z"
+                              stroke="currentColor" stroke-width="2"/>
+                        <path d="M33 11C28 9 24 11 20 15V32C24 28 28 27 33 29V11Z"
+                              stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </span>
+
+                <span class="brand-name">
+                    Memory <strong>Care</strong>
+                    <small>LEARNING, REFINED</small>
+                </span>
+            </a>
+
+            <p>Designed for focused learning and lasting understanding.</p>
+
+            <span class="footer-copyright">MEMORY CARE</span>
+
+        </div>
+    </footer>
+
+</body>
+</html>

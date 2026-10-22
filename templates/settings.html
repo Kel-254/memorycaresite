@@ -1,0 +1,204 @@
+
+{% extends "base.html" %}
+
+{% block title %}Account Settings | Memory Care{% endblock %}
+
+{% block body_class %}learner-dashboard learner-home mc-settings-page{% endblock %}
+{% block content %}
+
+<!-- PAGE HEADER -->
+<header class="mc-settings-topbar">
+
+    <div class="mc-settings-breadcrumb">
+        <span>YOUR PERSONAL LEARNING SPACE</span>
+        <p>Memory Care / Account Settings</p>
+    </div>
+
+    <div class="mc-settings-profile">
+        <div class="mc-settings-avatar">
+            {{ (current_user.full_name or 'L')[0]|upper }}
+        </div>
+
+        <div class="mc-settings-profile-info">
+            <strong>{{ current_user.full_name }}</strong>
+            <span>
+                {% if current_user.is_admin %}
+                    Administrator
+                {% else %}
+                    Learner
+                {% endif %}
+            </span>
+        </div>
+    </div>
+
+</header>
+
+<!-- PAGE INTRODUCTION -->
+<section class="mc-settings-intro">
+
+    <div class="mc-settings-eyebrow">ACCOUNT MANAGEMENT</div>
+
+    <h1>Account <span>Settings</span></h1>
+
+    <p>
+        Manage your personal information and keep your
+        account secure, all in one place.
+    </p>
+
+</section>
+
+<!-- FLASH MESSAGES -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="mc-settings-messages">
+            {% for category, message in messages %}
+                <div class="mc-settings-message {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
+<!-- SETTINGS CARDS -->
+<div class="mc-settings-grid">
+
+    <!-- PERSONAL INFORMATION -->
+    <section class="mc-settings-card">
+
+        <div class="mc-settings-card-heading">
+            <div class="mc-settings-card-icon">♙</div>
+
+            <div>
+                <span class="mc-settings-card-label">YOUR PROFILE</span>
+                <h2>Personal Information</h2>
+            </div>
+        </div>
+
+        <p class="mc-settings-description">
+            Keep your name and email address up to date.
+            These details are associated with your account.
+        </p>
+
+        <form method="POST"
+              action="{{ url_for('settings') }}"
+              class="mc-settings-form">
+
+            <input type="hidden"
+                   name="csrf_token"
+                   value="{{ csrf_token() }}">
+
+            <div class="mc-settings-field">
+                <label for="full_name">Full name</label>
+                <input type="text"
+                       id="full_name"
+                       name="full_name"
+                       value="{{ current_user.full_name }}"
+                       autocomplete="name"
+                       maxlength="100"
+                       required>
+            </div>
+
+            <div class="mc-settings-field">
+                <label for="email">Email address</label>
+                <input type="email"
+                       id="email"
+                       name="email"
+                       value="{{ current_user.email }}"
+                       autocomplete="email"
+                       maxlength="120"
+                       required>
+            </div>
+
+            <button class="mc-settings-button" type="submit">
+                Save Changes <span>→</span>
+            </button>
+
+        </form>
+
+    </section>
+
+    <!-- CHANGE PASSWORD -->
+    <section class="mc-settings-card">
+
+        <div class="mc-settings-card-heading">
+            <div class="mc-settings-card-icon">◇</div>
+
+            <div>
+                <span class="mc-settings-card-label">ACCOUNT SECURITY</span>
+                <h2>Change Password</h2>
+            </div>
+        </div>
+
+        <p class="mc-settings-description">
+            Update your password regularly to help protect
+            your account and personal information.
+        </p>
+
+        <form method="POST"
+              action="{{ url_for('settings') }}"
+              class="mc-settings-form">
+
+            <input type="hidden"
+                   name="csrf_token"
+                   value="{{ csrf_token() }}">
+
+            <div class="mc-settings-field">
+                <label for="current_password">Current password</label>
+                <input type="password"
+                       id="current_password"
+                       name="current_password"
+                       autocomplete="current-password"
+                       required>
+            </div>
+
+            <div class="mc-settings-field">
+                <label for="new_password">New password</label>
+                <input type="password"
+                       id="new_password"
+                       name="new_password"
+                       minlength="8"
+                       autocomplete="new-password"
+                       aria-describedby="password-hint"
+                       required>
+
+                <small id="password-hint" class="mc-settings-hint">
+                    Use at least 8 characters.
+                </small>
+            </div>
+
+            <div class="mc-settings-field">
+                <label for="confirm_password">Confirm new password</label>
+                <input type="password"
+                       id="confirm_password"
+                       name="confirm_password"
+                       minlength="8"
+                       autocomplete="new-password"
+                       required>
+            </div>
+
+            <button class="mc-settings-button" type="submit">
+                Update Password <span>→</span>
+            </button>
+
+        </form>
+
+        <div class="mc-settings-security-note">
+            <span>✦</span>
+            <p>
+                <strong>Keep your account safe.</strong>
+                Never share your password with anyone.
+            </p>
+        </div>
+
+    </section>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="mc-settings-footer">
+    <span>MEMORY CARE</span>
+    <p>Learn with purpose. Progress with confidence.</p>
+</footer>
+
+{% endblock %}

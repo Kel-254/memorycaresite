@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Courses & Modules | Memory Care</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <main class="courses-page">
+
+        <header class="courses-header">
+            <div>
+                <h1>Courses & Modules</h1>
+                <p>Manage and review the Memory Care learning structure.</p>
+            </div>
+
+            <div class="courses-header-actions">
+                <a href="{{ url_for('admin_dashboard') }}" class="back-link">
+                    &larr; Back to Admin
+                </a>
+
+                <a href="{{ url_for('add_course') }}" class="add-course-submit">
+                    + Add New Course
+                </a>
+            </div>
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="add-course-messages">
+                    {% for category, message in messages %}
+                        <div class="add-course-message {{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% if courses %}
+
+            {% for course in courses %}
+                <section class="course-card">
+
+                    <span class="course-label">
+                        COURSE {{ loop.index }}
+                    </span>
+
+                    <h2>{{ course.title }}</h2>
+
+                    <p class="course-description">
+                        {{ course.description or "No course description added yet." }}
+                    </p>
+
+                    <div class="course-summary">
+
+                        <div class="course-summary-item">
+                            <span class="course-summary-number">
+                                {{ course.modules|length }}
+                            </span>
+                            <span class="course-summary-label">
+                                Learning Modules
+                            </span>
+                        </div>
+
+                        <div class="course-summary-item">
+                            <span class="course-summary-number">80%</span>
+                            <span class="course-summary-label">
+                                Pass Mark
+                            </span>
+                        </div>
+
+                        <div class="course-summary-item">
+                            <span class="course-summary-number">1</span>
+                            <span class="course-summary-label">
+                                Final Assessment
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <div class="course-actions">
+                        <a
+                            href="{{ url_for('manage_modules', course_id=course.id) }}"
+                            class="manage-modules-button"
+                        >
+                            Manage Modules
+                        </a>
+                    </div>
+
+                </section>
+            {% endfor %}
+
+        {% else %}
+
+            <div class="empty-state">
+                <h2>No courses yet</h2>
+                <p>Your courses will appear here once you add them.</p>
+
+                <a href="{{ url_for('add_course') }}" class="add-course-submit">
+                    + Create Your First Course
+                </a>
+            </div>
+
+        {% endif %}
+
+    </main>
+</body>
+</html>

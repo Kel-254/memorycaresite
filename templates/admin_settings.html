@@ -1,0 +1,386 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Settings | Memory Care</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="learner-dashboard">
+
+    <!-- Sidebar overlay for small screens -->
+    <div class="mc-sidebar-overlay" id="mcSidebarOverlay"></div>
+
+    <!-- ADMIN SIDEBAR -->
+    <aside class="mc-admin-sidebar" id="mcAdminSidebar">
+
+        <a href="{{ url_for('admin_dashboard') }}" class="mc-sidebar-brand">
+            <span class="mc-sidebar-logo">MC</span>
+            <span class="mc-sidebar-brand-text">
+                <strong>MEMORY CARE</strong>
+                <small>ADMINISTRATION</small>
+            </span>
+        </a>
+
+        <div class="mc-sidebar-divider"></div>
+
+        <p class="mc-sidebar-heading">WORKSPACE</p>
+
+        <nav class="mc-sidebar-nav" aria-label="Main navigation">
+
+            <a href="{{ url_for('admin_dashboard') }}"
+               class="mc-sidebar-link">
+                <span class="mc-sidebar-icon">⌂</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{{ url_for('admin_learners') }}"
+               class="mc-sidebar-link">
+                <span class="mc-sidebar-icon">♙</span>
+                <span>Learner Management</span>
+            </a>
+
+        </nav>
+
+        <p class="mc-sidebar-heading mc-sidebar-heading-spaced">
+            CONFIGURATION
+        </p>
+
+        <nav class="mc-sidebar-nav" aria-label="Configuration">
+
+            <a href="{{ url_for('admin_settings') }}"
+               class="mc-sidebar-link active"
+               aria-current="page">
+                <span class="mc-sidebar-icon">⚙</span>
+                <span>Settings</span>
+            </a>
+
+        </nav>
+
+        <div class="mc-sidebar-bottom">
+
+            <div class="mc-sidebar-message">
+                <span class="mc-sidebar-message-icon">✦</span>
+                <div>
+                    <strong>Memory Care</strong>
+                    <small>Learning with care.</small>
+                </div>
+            </div>
+
+            <form action="{{ url_for('logout') }}" method="POST">
+                <input type="hidden"
+                       name="csrf_token"
+                       value="{{ csrf_token() }}">
+
+                <button type="submit" class="mc-sidebar-signout">
+                    <span class="mc-sidebar-icon">↪</span>
+                    <span>Sign out</span>
+                </button>
+            </form>
+
+        </div>
+
+    </aside>
+
+    <!-- MAIN SETTINGS CONTENT -->
+    <main class="admin-page">
+        <div class="admin-page-navigation">
+            <a href="{{ url_for('admin_dashboard') }}" class="back-link">
+                &larr; Back to Dashboard
+            </a>
+        </div>
+
+        <!-- TOP BAR -->
+        <header class="admin-topbar">
+
+            <div class="mc-admin-brand-group">
+
+                <button type="button"
+                        class="mc-sidebar-toggle"
+                        id="mcSidebarToggle"
+                        aria-label="Open navigation menu"
+                        aria-controls="mcAdminSidebar"
+                        aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+                <a href="{{ url_for('admin_dashboard') }}"
+                   class="admin-brand">
+                    <span class="admin-brand-icon">MC</span>
+                    <span>
+                        <strong>MEMORY CARE</strong>
+                        <small>ADMINISTRATION</small>
+                    </span>
+                </a>
+
+            </div>
+
+            <div class="admin-user">
+                <span>{{ user.full_name }}</span>
+            </div>
+
+        </header>
+
+        <!-- PAGE INTRODUCTION -->
+        <section class="admin-welcome">
+            <p class="admin-eyebrow">ADMINISTRATION</p>
+            <h1>System <span>Settings.</span></h1>
+            <p>
+                Manage your administrator account and configure
+                the learning rules for Memory Care.
+            </p>
+        </section>
+
+        <!-- ADMINISTRATOR INFORMATION -->
+        <section class="admin-section">
+
+            <div class="admin-section-heading">
+                <div>
+                    <p class="admin-eyebrow">MY ACCOUNT</p>
+                    <h2>Administrator Information</h2>
+                </div>
+            </div>
+
+            <article class="admin-management-card admin-profile-card">
+
+                <h3>Personal Information</h3>
+
+                <p>
+                    Update the name and email address associated
+                    with your administrator account.
+                </p>
+
+                <form method="POST"
+                      action="{{ url_for('admin_settings') }}">
+
+                    <input type="hidden"
+                           name="csrf_token"
+                           value="{{ csrf_token() }}">
+
+                    <input type="hidden"
+                           name="form_type"
+                           value="profile">
+
+                    <div class="admin-setting-field">
+                        <label for="full_name">Full Name</label>
+                        <input
+                            type="text"
+                            id="full_name"
+                            name="full_name"
+                            value="{{ user.full_name }}"
+                            maxlength="150"
+                            autocomplete="name"
+                            required
+                        >
+                    </div>
+
+                    <div class="admin-setting-field">
+                        <label for="email">Email Address</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value="{{ user.email }}"
+                            maxlength="150"
+                            autocomplete="email"
+                            required
+                        >
+                    </div>
+
+                    <button type="submit" class="admin-card-status">
+                        Save Personal Information
+                    </button>
+
+                </form>
+
+            </article>
+
+        </section>
+
+        <!-- CHANGE ADMINISTRATOR PASSWORD -->
+        <section class="admin-section">
+
+            <div class="admin-section-heading">
+                <div>
+                    <p class="admin-eyebrow">ACCOUNT SECURITY</p>
+                    <h2>Change Password</h2>
+                </div>
+            </div>
+
+            <article class="admin-management-card admin-profile-card">
+
+                <h3>Update Your Password</h3>
+
+                <p>
+                    Verify your current password before choosing a new one.
+                    Use at least 8 characters.
+                </p>
+
+                <form method="POST"
+                      action="{{ url_for('admin_settings') }}">
+
+                    <input type="hidden"
+                           name="csrf_token"
+                           value="{{ csrf_token() }}">
+
+                    <input type="hidden"
+                           name="form_type"
+                           value="password">
+
+                    <div class="admin-setting-field">
+                        <label for="current_password">Current Password</label>
+                        <input
+                            type="password"
+                            id="current_password"
+                            name="current_password"
+                            autocomplete="current-password"
+                            required
+                        >
+                    </div>
+
+                    <div class="admin-setting-field">
+                        <label for="new_password">New Password</label>
+                        <input
+                            type="password"
+                            id="new_password"
+                            name="new_password"
+                            minlength="8"
+                            autocomplete="new-password"
+                            required
+                        >
+                    </div>
+
+                    <div class="admin-setting-field">
+                        <label for="confirm_password">Confirm New Password</label>
+                        <input
+                            type="password"
+                            id="confirm_password"
+                            name="confirm_password"
+                            minlength="8"
+                            autocomplete="new-password"
+                            required
+                        >
+                    </div>
+
+                    <button type="submit" class="admin-card-status">
+                        Update Password
+                    </button>
+
+                </form>
+
+            </article>
+
+        </section>
+
+        <!-- ASSESSMENT SETTINGS -->
+        <section class="admin-section">
+
+            <div class="admin-section-heading">
+                <div>
+                    <p class="admin-eyebrow">CONFIGURATION</p>
+                    <h2>Assessment Settings</h2>
+                </div>
+            </div>
+
+            <article class="admin-management-card">
+
+                <h3>Assessment Pass Mark</h3>
+
+                <p>
+                    Set the minimum percentage learners must achieve
+                    to pass their assessment.
+                </p>
+
+                <form method="POST"
+                      action="{{ url_for('admin_settings') }}">
+
+                    <input type="hidden"
+                           name="csrf_token"
+                           value="{{ csrf_token() }}">
+
+                    <input type="hidden"
+                           name="form_type"
+                           value="pass_mark">
+
+                    <div class="admin-setting-field">
+                        <label for="assessment_pass_mark">
+                            Required pass mark (%)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="assessment_pass_mark"
+                            name="assessment_pass_mark"
+                            min="1"
+                            max="100"
+                            step="1"
+                            value="{{ pass_mark }}"
+                            required
+                        >
+                    </div>
+
+                    <button type="submit" class="admin-card-status">
+                        Save Pass Mark
+                    </button>
+
+                </form>
+
+                <p>
+                    Current pass mark:
+                    <strong>{{ pass_mark }}%</strong>
+                </p>
+
+            </article>
+
+        </section>
+
+        <footer class="admin-footer">
+            Memory Care · Administrator Settings
+        </footer>
+
+    </main>
+
+    <!-- MOBILE SIDEBAR BEHAVIOR -->
+    <script>
+        const sidebar = document.getElementById("mcAdminSidebar");
+        const toggle = document.getElementById("mcSidebarToggle");
+        const overlay = document.getElementById("mcSidebarOverlay");
+
+        function openSidebar() {
+            sidebar.classList.add("mc-sidebar-open");
+            overlay.classList.add("mc-overlay-visible");
+            toggle.setAttribute("aria-expanded", "true");
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove("mc-sidebar-open");
+            overlay.classList.remove("mc-overlay-visible");
+            toggle.setAttribute("aria-expanded", "false");
+        }
+
+        toggle.addEventListener("click", function () {
+            if (sidebar.classList.contains("mc-sidebar-open")) {
+                closeSidebar();
+            } else {
+                openSidebar();
+            }
+        });
+
+        overlay.addEventListener("click", closeSidebar);
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") {
+                closeSidebar();
+            }
+        });
+    </script>
+
+</body>
+</html>

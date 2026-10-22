@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sign In | Memory Care</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap"
+          rel="stylesheet">
+</head>
+
+<body class="auth-page">
+
+    <div class="auth-3d-background" aria-hidden="true">
+        <span class="floating-object object-one"></span>
+        <span class="floating-object object-two"></span>
+        <span class="floating-object object-three"></span>
+        <span class="floating-object object-four"></span>
+        <span class="floating-object object-five"></span>
+        <span class="floating-object object-six"></span>
+        <span class="floating-object object-seven"></span>
+        <span class="floating-object object-eight"></span>
+    </div>
+
+    <header class="site-header">
+        <nav class="navbar container">
+            <a href="{{ url_for('index') }}" class="brand">
+                <span class="brand-mark">M</span>
+
+                <span class="brand-name">
+                    Memory <strong>Care</strong>
+                    <small>LEARNING, REFINED</small>
+                </span>
+            </a>
+
+            <div class="nav-actions">
+                <span class="auth-nav-text">New to Memory Care?</span>
+
+                <a href="{{ url_for('register') }}"
+                   class="button button-small">
+                    Create account
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="auth-container">
+
+        <section class="auth-card login-card">
+
+            <div class="auth-symbol">✦</div>
+
+            <div class="eyebrow auth-eyebrow">
+                <span class="eyebrow-line"></span>
+                WELCOME BACK
+            </div>
+
+            <h1>Good to see <span>you.</span></h1>
+
+            <p class="auth-description">
+                Sign in to return to your learning space,
+                continue studying, and keep moving towards mastery.
+            </p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="auth-alert {{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('login') }}">
+                <input type="hidden" name="csrf_token"
+                       value="{{ csrf_token() }}">
+
+                <div class="form-group">
+                    <label for="email">Email address</label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="you@example.com"
+                        autocomplete="email"
+                        maxlength="120"
+                        required
+                        autofocus>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required>
+                </div>
+
+                <button type="submit"
+                        class="button button-primary auth-submit">
+                    Sign in to Memory Care <span>→</span>
+                </button>
+            </form>
+
+            <div class="login-divider">
+                <span></span>
+                <small>YOUR LEARNING JOURNEY AWAITS</small>
+                <span></span>
+            </div>
+
+            <p class="auth-switch">
+                Don't have an account?
+                <a href="{{ url_for('register') }}">Create one here</a>
+            </p>
+
+        </section>
+
+        <p class="auth-footer">
+            Learn with purpose. Progress with confidence.
+        </p>
+
+    </main>
+
+</body>
+</html>

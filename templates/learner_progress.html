@@ -1,0 +1,328 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Progress | Memory Care</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="learner-dashboard learner-home mc-progress-page">
+    <button
+        type="button"
+        class="dashboard-mobile-menu"
+        id="dashboardMobileMenu"
+        aria-label="Open navigation menu"
+        aria-controls="dashboardSidebar"
+        aria-expanded="false">
+        <span aria-hidden="true">☰</span>
+    </button>
+
+<div class="dashboard-layout">   
+<aside class="dashboard-sidebar" id="dashboardSidebar">
+    <a href="{{ url_for('dashboard') }}" class="brand">
+        <span class="brand-mark">M</span>
+        <span class="brand-name">
+            Memory <strong>Care</strong>
+            <small>LEARNING PORTAL</small>
+        </span>
+    </a>
+
+    <div class="sidebar-caption">MY LEARNING</div>
+
+    <nav class="dashboard-nav">
+        <a href="{{ url_for('dashboard') }}"
+           class="dashboard-nav-link">
+            <span>⌂</span> Dashboard
+        </a>
+
+        <a href="{{ url_for('learner_courses') }}"
+           class="dashboard-nav-link">
+            <span>▤</span> My Courses
+        </a>
+
+        <a href="{{ url_for('learner_study_materials') }}"
+           class="dashboard-nav-link">
+            <span>▣</span> Study Materials
+        </a>
+
+        <a href="{{ url_for('learner_assessment') }}"
+           class="dashboard-nav-link">
+            <span>✓</span> Assessments
+        </a>
+
+        <a href="{{ url_for('learner_progress') }}"
+           class="dashboard-nav-link active">
+            <span>◷</span> Learning Progress
+        </a>
+
+        {% if user.is_admin %}
+        <a href="{{ url_for('admin_dashboard') }}"
+           class="dashboard-nav-link">
+            <span>⚙</span> Admin Portal
+        </a>
+        {% endif %}
+    </nav>
+
+    <div class="sidebar-bottom">
+        <div class="sidebar-help">
+            <span class="help-star">✦</span>
+            <strong>Your learning journey</strong>
+            <p>Study, practise and build your knowledge one step at a time.</p>
+        </div>
+
+        <form method="POST" action="{{ url_for('logout') }}">
+            <input type="hidden" name="csrf_token"
+                   value="{{ csrf_token() }}">
+            <button type="submit" class="dashboard-logout">
+                ↗ Sign out
+            </button>
+        </form>
+    </div>
+</aside>
+
+<div
+    class="dashboard-sidebar-overlay"
+    id="dashboardSidebarOverlay"
+    aria-hidden="true">
+</div>
+
+    <main class="dashboard-main">
+
+        <header class="dashboard-topbar mc-progress-topbar">
+            <div class="mc-progress-heading">
+                <span class="mc-eyebrow">YOUR LEARNING JOURNEY</span>
+                <h1>Learning Progress</h1>
+            </div>
+
+            <div class="dashboard-user mc-progress-user">
+                <div class="user-avatar mc-progress-avatar">
+                    {{ user.full_name[0]|upper }}
+                </div>
+                <div class="mc-progress-user-details">
+                    <strong>{{ user.full_name }}</strong>
+                    <span>Learner</span>
+                </div>
+            </div>
+        </header>
+
+        <section class="mc-progress-welcome">
+            <div>
+                <span class="mc-eyebrow">KEEP MOVING FORWARD</span>
+                <h2>Your effort is adding up.</h2>
+                <p>Review your completed modules, course progress and assessment results in one place.</p>
+            </div>
+
+            <div class="mc-progress-overall">
+                <span>Overall completion</span>
+                <strong>{{ overall_percentage }}%</strong>
+                <div class="mc-progress-track">
+                    <div class="mc-progress-fill"
+                         data-progress="{{ overall_percentage }}"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mc-progress-summary">
+            <article class="mc-progress-stat">
+                <span class="mc-stat-icon">▤</span>
+                <p>Modules Completed</p>
+                <strong>{{ completed_modules }} <small>/ {{ total_modules }}</small></strong>
+            </article>
+
+            <article class="mc-progress-stat">
+                <span class="mc-stat-icon">◎</span>
+                <p>Courses Available</p>
+                <strong>{{ courses|length }}</strong>
+            </article>
+
+            <article class="mc-progress-stat">
+                <span class="mc-stat-icon">✓</span>
+                <p>Assessment Attempts</p>
+                <strong>{{ attempts|length }}</strong>
+            </article>
+        </section>
+
+        <section class="mc-progress-section">
+            <div class="mc-section-heading">
+                <div>
+                    <span class="mc-eyebrow">COURSE OVERVIEW</span>
+                    <h2>Your Courses</h2>
+                </div>
+                <a href="{{ url_for('learner_courses') }}" class="mc-text-link">
+                    View My Courses →
+                </a>
+            </div>
+
+            {% if courses %}
+            <div class="mc-progress-course-list">
+                {% for course in courses %}
+                {% set progress = course_progress[course.id] %}
+
+                <article class="mc-progress-course">
+                    <div class="mc-progress-course-top">
+                        <div>
+                            <h3>{{ course.title }}</h3>
+                            <p>
+                                {{ progress.completed_modules }} of
+                                {{ progress.total_modules }} modules completed
+                            </p>
+                        </div>
+
+                        <span class="mc-progress-status
+                            {% if progress.passed %}is-completed
+                            {% elif progress.status == 'In Progress' %}is-in-progress
+                            {% else %}is-not-started{% endif %}">
+                            {{ progress.status }}
+                        </span>
+                    </div>
+
+                    <div class="mc-progress-track">
+                        <div class="mc-progress-fill"
+                             data-progress="{{ progress.percentage }}"></div>
+                    </div>
+
+                    <div class="mc-progress-course-bottom">
+                        <span>{{ progress.percentage }}% module completion</span>
+
+                        {% if progress.last_module and not progress.passed %}
+                        <a href="{{ url_for('learner_module_notes', module_id=progress.last_module.id) }}">
+                            Continue Learning →
+                        </a>
+                        {% elif not progress.passed %}
+                        <a href="{{ url_for('learner_course_modules', course_id=course.id) }}">
+                            Start Learning →
+                        </a>
+                        {% else %}
+                        <span class="mc-progress-passed">✓ Assessment Passed</span>
+                        {% endif %}
+                    </div>
+
+                    {% if progress.passed %}
+                    <p class="mc-progress-note">
+                        You have passed the final assessment for this course.
+                    </p>
+                    {% endif %}
+                </article>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="mc-progress-empty">
+                <h3>No courses available yet</h3>
+                <p>Your courses will appear here when they become available.</p>
+            </div>
+            {% endif %}
+        </section>
+
+        <section class="mc-progress-section">
+            <div class="mc-section-heading">
+                <div>
+                    <span class="mc-eyebrow">TEST PERFORMANCE</span>
+                    <h2>Assessment History</h2>
+                </div>
+            </div>
+
+            {% if attempts %}
+            <div class="mc-progress-table-wrap">
+                <table class="mc-progress-table">
+                    <thead>
+                        <tr>
+                            <th>Course</th>
+                            <th>Score</th>
+                            <th>Result</th>
+                            <th>Date Attempted</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for attempt in attempts %}
+                        <tr>
+                            <td>{{ attempt.course.title }}</td>
+                            <td>
+                                {{ attempt.score }}/{{ attempt.total_questions }}
+                                <span class="mc-score-percent">
+                                    ({{ attempt.percentage }}%)
+                                </span>
+                            </td>
+                            <td>
+                                {% if attempt.passed %}
+                                <span class="mc-result-badge is-passed">Passed</span>
+                                {% else %}
+                                <span class="mc-result-badge is-failed">Retry Needed</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ attempt.attempted_at.strftime('%d %b %Y, %H:%M')
+                                   if attempt.attempted_at else '—' }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="mc-progress-empty">
+                <h3>No assessments taken yet</h3>
+                <p>Your scores and results will appear here after your first assessment.</p>
+                <a href="{{ url_for('learner_assessment') }}" class="mc-primary-button">
+                    Take Assessment →
+                </a>
+            </div>
+            {% endif %}
+        </section>
+
+    </main>
+</div>
+
+
+<script>
+    // Course progress bars
+    document.querySelectorAll(".mc-course-progress-fill").forEach(function (bar) {
+        const percentage = Number(bar.dataset.progress);
+        bar.style.width = Math.max(0, Math.min(100, percentage)) + "%";
+    });
+
+    // Mobile sidebar
+    const menuButton = document.getElementById("dashboardMobileMenu");
+    const sidebar = document.getElementById("dashboardSidebar");
+    const overlay = document.getElementById("dashboardSidebarOverlay");
+
+    function openSidebar() {
+        document.body.classList.add("sidebar-open");
+        menuButton.setAttribute("aria-expanded", "true");
+        menuButton.setAttribute("aria-label", "Close navigation menu");
+        overlay.setAttribute("aria-hidden", "false");
+    }
+
+    function closeSidebar() {
+        document.body.classList.remove("sidebar-open");
+        menuButton.setAttribute("aria-expanded", "false");
+        menuButton.setAttribute("aria-label", "Open navigation menu");
+        overlay.setAttribute("aria-hidden", "true");
+    }
+
+    menuButton.addEventListener("click", function () {
+        if (document.body.classList.contains("sidebar-open")) {
+            closeSidebar();
+        } else {
+            openSidebar();
+        }
+    });
+
+    overlay.addEventListener("click", closeSidebar);
+
+    sidebar.querySelectorAll(".dashboard-nav-link").forEach(function (link) {
+        link.addEventListener("click", closeSidebar);
+    });
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") closeSidebar();
+    });
+
+    window.addEventListener("resize", function () {
+        if (window.innerWidth > 768) closeSidebar();
+    });
+</script>
+</body>
+</html>

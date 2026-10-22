@@ -1,0 +1,178 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ module.title }} | Memory Care</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap"
+          rel="stylesheet">
+</head>
+
+<body class="learner-dashboard">
+
+    <aside class="dashboard-sidebar">
+        <a href="{{ url_for('dashboard') }}" class="brand">
+            <span class="brand-mark">M</span>
+            <span class="brand-name">
+                Memory <strong>Care</strong>
+                <small>LEARNING PORTAL</small>
+            </span>
+        </a>
+
+        <div class="sidebar-caption">MY LEARNING</div>
+
+        <nav class="dashboard-nav">
+            <a href="{{ url_for('dashboard') }}"
+               class="dashboard-nav-link">
+                <span>⌂</span> Dashboard
+            </a>
+
+            <a href="{{ url_for('learner_courses') }}"
+               class="dashboard-nav-link">
+                <span>▤</span> My Courses
+            </a>
+
+            <a href="{{ url_for('learner_study_materials') }}"
+               class="dashboard-nav-link active">
+                <span>▣</span> Study Materials
+            </a>
+
+            <a href="{{ url_for('learner_assessment') }}"
+               class="dashboard-nav-link">
+                <span>✓</span> Assessments
+            </a>
+
+            <a href="{{ url_for('learner_progress') }}"
+               class="dashboard-nav-link">
+                <span>◷</span> Learning Progress
+            </a>
+
+            {% if user.is_admin %}
+            <a href="{{ url_for('admin_dashboard') }}"
+               class="dashboard-nav-link">
+                <span>⚙</span> Admin Portal
+            </a>
+            {% endif %}
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="sidebar-help">
+                <span class="help-star">✦</span>
+                <strong>Your learning journey</strong>
+                <p>Study, practise and build your knowledge one step at a time.</p>
+            </div>
+
+            <form method="POST" action="{{ url_for('logout') }}">
+                <input type="hidden" name="csrf_token"
+                       value="{{ csrf_token() }}">
+                <button type="submit" class="dashboard-logout">
+                    ↗ Sign out
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <main class="dashboard-main">
+
+        <header class="dashboard-topbar">
+            <div>
+                <span class="dashboard-date-label">
+                    YOUR PERSONAL LEARNING SPACE
+                </span>
+                <p>Memory Care / {{ module.title }}</p>
+            </div>
+
+            <div class="profile-chip">
+                <div class="profile-avatar">
+                    {{ user.full_name[0]|upper }}
+                </div>
+                <div class="profile-info">
+                    <strong>{{ user.full_name }}</strong>
+                    <span>Learner</span>
+                </div>
+            </div>
+        </header>
+
+        <section class="learning-section mc-section">
+
+            <div class="mc-notes-back-row">
+                <a href="{{ url_for('learner_course_modules', course_id=module.course_id) }}"
+                   class="mc-notes-back-button">
+                    ← Back to Modules
+                </a>
+            </div>
+
+            <div class="learning-section-heading">
+                <div>
+                    <span class="dashboard-eyebrow">COURSE STUDY NOTES</span>
+                    <h2>{{ module.title }}</h2>
+                    <p>
+                        {{ module.description or
+                           'Read the notes below carefully before continuing to the next module.' }}
+                    </p>
+                </div>
+                <span class="mc-section-symbol">📖</span>
+            </div>
+
+            {% if notes %}
+                {% for note in notes %}
+                    <article class="mc-study-card mc-note-content">
+                        <span class="mc-study-number">
+                            {{ "%02d"|format(loop.index) }}
+                        </span>
+
+                        <h3>{{ note.title }}</h3>
+
+                        <div class="mc-note-text">
+                            {{ note.content|safe }}
+                        </div>
+                    </article>
+                {% endfor %}
+            {% else %}
+                <article class="mc-study-card">
+                    <h3>No study notes available yet</h3>
+                    <p>
+                        Study notes for this module have not been added yet.
+                        Please check back later.
+                    </p>
+                </article>
+            {% endif %}
+
+            <div class="mc-module-completion-panel">
+                <div>
+                    <span class="dashboard-eyebrow">YOUR NEXT STEP</span>
+                    <h3>Finished studying this module?</h3>
+                    <p>
+                        Mark this module as complete to save your progress
+                        and continue learning.
+                    </p>
+                </div>
+
+                <form method="POST"
+                      action="{{ url_for('complete_learner_module', module_id=module.id) }}">
+
+                    <input type="hidden"
+                           name="csrf_token"
+                           value="{{ csrf_token() }}">
+
+                    <button type="submit" class="mc-module-complete-button">
+                        Mark as Complete &amp; Continue →
+                    </button>
+                </form>
+            </div>
+
+        </section>
+
+        <footer class="dashboard-footer">
+            <span>MEMORY CARE</span>
+            <p>Learn with purpose. Progress with confidence.</p>
+        </footer>
+
+    </main>
+</body>
+</html>

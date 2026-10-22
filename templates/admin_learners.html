@@ -1,0 +1,262 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Learner Management | Memory Care</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="learner-dashboard">
+
+    <!-- Sidebar overlay for small screens -->
+    <div class="mc-sidebar-overlay" id="mcSidebarOverlay"></div>
+
+    <!-- ADMIN SIDEBAR: MATCHES DASHBOARD -->
+    <aside class="mc-admin-sidebar" id="mcAdminSidebar">
+
+        <a href="{{ url_for('admin_dashboard') }}" class="mc-sidebar-brand">
+            <span class="mc-sidebar-logo">MC</span>
+            <span class="mc-sidebar-brand-text">
+                <strong>MEMORY CARE</strong>
+                <small>ADMINISTRATION</small>
+            </span>
+        </a>
+
+        <div class="mc-sidebar-divider"></div>
+
+        <p class="mc-sidebar-heading">WORKSPACE</p>
+
+        <nav class="mc-sidebar-nav" aria-label="Main navigation">
+
+            <a href="{{ url_for('admin_dashboard') }}"
+               class="mc-sidebar-link">
+                <span class="mc-sidebar-icon">⌂</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{{ url_for('admin_learners') }}"
+               class="mc-sidebar-link active"
+               aria-current="page">
+                <span class="mc-sidebar-icon">♙</span>
+                <span>Learner Management</span>
+            </a>
+
+        </nav>
+
+        <p class="mc-sidebar-heading mc-sidebar-heading-spaced">
+            CONFIGURATION
+        </p>
+
+        <nav class="mc-sidebar-nav" aria-label="Configuration">
+
+            <a href="{{ url_for('admin_settings') }}"
+               class="mc-sidebar-link">
+                <span class="mc-sidebar-icon">⚙</span>
+                <span>Settings</span>
+            </a>
+
+        </nav>
+
+        <div class="mc-sidebar-bottom">
+
+            <div class="mc-sidebar-message">
+                <span class="mc-sidebar-message-icon">✦</span>
+                <div>
+                    <strong>Memory Care</strong>
+                    <small>Learning with care.</small>
+                </div>
+            </div>
+
+            <form action="{{ url_for('logout') }}" method="POST">
+                <input type="hidden"
+                       name="csrf_token"
+                       value="{{ csrf_token() }}">
+
+                <button type="submit" class="mc-sidebar-signout">
+                    <span class="mc-sidebar-icon">↪</span>
+                    <span>Sign out</span>
+                </button>
+            </form>
+
+        </div>
+
+    </aside>
+
+    <!-- MAIN LEARNER MANAGEMENT CONTENT -->
+    <main class="admin-page">
+        <div class="admin-page-navigation">
+            <a href="{{ url_for('admin_dashboard') }}" class="back-link">
+                &larr; Back to Dashboard
+            </a>
+        </div>
+
+        <!-- TOP BAR -->
+        <header class="admin-topbar">
+
+            <div class="mc-admin-brand-group">
+
+                <button type="button"
+                        class="mc-sidebar-toggle"
+                        id="mcSidebarToggle"
+                        aria-label="Open navigation menu"
+                        aria-controls="mcAdminSidebar"
+                        aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+                <a href="{{ url_for('admin_dashboard') }}"
+                   class="admin-brand">
+                    <span class="admin-brand-icon">MC</span>
+                    <span>
+                        <strong>MEMORY CARE</strong>
+                        <small>ADMINISTRATION</small>
+                    </span>
+                </a>
+
+            </div>
+
+            <div class="admin-user">
+                <span>{{ user.full_name }}</span>
+            </div>
+
+        </header>
+
+        <!-- PAGE INTRODUCTION -->
+        <section class="admin-welcome">
+            <p class="admin-eyebrow">LEARNER MANAGEMENT</p>
+            <h1>Registered <span>Learners.</span></h1>
+            <p>
+                View registered learner accounts and find learners
+                by name or email address.
+            </p>
+        </section>
+
+        <!-- LEARNER DIRECTORY -->
+        <section class="admin-section">
+
+            <div class="admin-section-heading">
+                <div>
+                    <p class="admin-eyebrow">LEARNER DIRECTORY</p>
+                    <h2>All Learners ({{ learners|length }})</h2>
+                </div>
+            </div>
+
+            <!-- SEARCH LEARNERS -->
+            <form method="GET"
+                  action="{{ url_for('admin_learners') }}"
+                  class="admin-learner-search">
+
+                <input
+                    type="search"
+                    name="q"
+                    placeholder="Search name or email..."
+                    value="{{ search_query }}"
+                    aria-label="Search learners by name or email"
+                >
+
+                <button type="submit" class="admin-card-status">
+                    Search
+                </button>
+
+                {% if search_query %}
+                    <a href="{{ url_for('admin_learners') }}"
+                       class="back-link">
+                        Clear
+                    </a>
+                {% endif %}
+
+            </form>
+
+            <!-- LEARNER TABLE -->
+            <div class="admin-learner-table-wrapper">
+                <table class="admin-learner-table">
+
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Full Name</th>
+                            <th>Email Address</th>
+                            <th>Account Type</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for learner in learners %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ learner.full_name }}</td>
+                            <td>{{ learner.email }}</td>
+                            <td>
+                                <span class="admin-learner-badge">
+                                    Learner
+                                </span>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="admin-learner-empty">
+                                {% if search_query %}
+                                    No learners match your search.
+                                {% else %}
+                                    No learner accounts have been registered yet.
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+
+        </section>
+
+        <footer class="admin-footer">
+            Memory Care · Learner Management
+        </footer>
+
+    </main>
+
+    <!-- MOBILE SIDEBAR BEHAVIOR -->
+    <script>
+        const sidebar = document.getElementById("mcAdminSidebar");
+        const toggle = document.getElementById("mcSidebarToggle");
+        const overlay = document.getElementById("mcSidebarOverlay");
+
+        function openSidebar() {
+            sidebar.classList.add("mc-sidebar-open");
+            overlay.classList.add("mc-overlay-visible");
+            toggle.setAttribute("aria-expanded", "true");
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove("mc-sidebar-open");
+            overlay.classList.remove("mc-overlay-visible");
+            toggle.setAttribute("aria-expanded", "false");
+        }
+
+        toggle.addEventListener("click", function () {
+            if (sidebar.classList.contains("mc-sidebar-open")) {
+                closeSidebar();
+            } else {
+                openSidebar();
+            }
+        });
+
+        overlay.addEventListener("click", closeSidebar);
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") {
+                closeSidebar();
+            }
+        });
+    </script>
+
+</body>
+</html>

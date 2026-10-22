@@ -1,0 +1,94 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Care | Add Course</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="add-course-page">
+    <main class="add-course-container">
+
+        <header class="add-course-header">
+            <a href="{{ url_for('admin_courses') }}" class="back-link">
+                &larr; Back to Courses
+            </a>
+
+            <p class="add-course-eyebrow">MEMORY CARE · ADMIN PORTAL</p>
+            <h1>Create a New Course</h1>
+            <p class="add-course-intro">
+                Add a course to your learning system. You can add its modules
+                after creating it.
+            </p>
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="add-course-messages">
+                    {% for category, message in messages %}
+                        <div class="add-course-message {{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <section class="add-course-card">
+            <div class="add-course-card-heading">
+                <div class="add-course-icon">MC</div>
+                <div>
+                    <h2>Course Details</h2>
+                    <p>Enter the basic information below.</p>
+                </div>
+            </div>
+
+            <form method="POST" action="{{ url_for('add_course') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div class="add-course-field">
+                    <label for="title">Course Title <span>*</span></label>
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        value="{{ title }}"
+                        placeholder="e.g. Understanding Cognitive Impairment"
+                        maxlength="200"
+                        required
+                    >
+                    <small>Choose a clear title learners can easily understand.</small>
+                </div>
+
+                <div class="add-course-field">
+                    <label for="description">Course Description</label>
+                    <textarea
+                        id="description"
+                        name="description"
+                        rows="5"
+                        placeholder="Explain what learners will study in this course..."
+                    >{{ description }}</textarea>
+                    <small>Briefly describe the topics and learning objectives.</small>
+                </div>
+
+                <div class="add-course-actions">
+                    <a href="{{ url_for('admin_courses') }}" class="add-course-cancel">
+                        Cancel
+                    </a>
+
+                    <button type="submit" class="add-course-submit">
+                        Create Course &rarr;
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <p class="add-course-footer">
+            MEMORY CARE · Learn with confidence, one step at a time.
+        </p>
+
+    </main>
+</body>
+</html>

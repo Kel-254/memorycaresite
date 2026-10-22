@@ -1,0 +1,286 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Courses | Memory Care</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap"
+          rel="stylesheet">
+</head>
+
+<body class="learner-dashboard learner-home">
+
+    <button
+        type="button"
+        class="dashboard-mobile-menu"
+        id="dashboardMobileMenu"
+        aria-label="Open navigation menu"
+        aria-controls="dashboardSidebar"
+        aria-expanded="false">
+        <span aria-hidden="true">☰</span>
+    </button>
+
+    <aside class="dashboard-sidebar" id="dashboardSidebar">
+        <a href="{{ url_for('dashboard') }}" class="brand">
+            <span class="brand-mark">M</span>
+            <span class="brand-name">
+                Memory <strong>Care</strong>
+                <small>LEARNING PORTAL</small>
+            </span>
+        </a>
+
+        <div class="sidebar-caption">MY LEARNING</div>
+
+        <nav class="dashboard-nav">
+            <a href="{{ url_for('dashboard') }}"
+               class="dashboard-nav-link">
+                <span>⌂</span> Dashboard
+            </a>
+
+            <a href="{{ url_for('learner_courses') }}"
+               class="dashboard-nav-link active">
+                <span>▤</span> My Courses
+            </a>
+
+            <a href="{{ url_for('learner_study_materials') }}"
+               class="dashboard-nav-link">
+                <span>▣</span> Study Materials
+            </a>
+
+            <a href="{{ url_for('learner_assessment') }}"
+               class="dashboard-nav-link">
+                <span>✓</span> Assessments
+            </a>
+
+            <a href="{{ url_for('learner_progress') }}"
+               class="dashboard-nav-link">
+                <span>◷</span> Learning Progress
+            </a>
+
+            {% if user.is_admin %}
+            <a href="{{ url_for('admin_dashboard') }}"
+               class="dashboard-nav-link">
+                <span>⚙</span> Admin Portal
+            </a>
+            {% endif %}
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="sidebar-help">
+                <span class="help-star">✦</span>
+                <strong>Your learning journey</strong>
+                <p>Study, practise and build your knowledge one step at a time.</p>
+            </div>
+
+            <form method="POST" action="{{ url_for('logout') }}">
+                <input type="hidden" name="csrf_token"
+                       value="{{ csrf_token() }}">
+                <button type="submit" class="dashboard-logout">
+                    ↗ Sign out
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <div
+        class="dashboard-sidebar-overlay"
+        id="dashboardSidebarOverlay"
+        aria-hidden="true">
+    </div>
+
+    <main class="dashboard-main">
+
+        <header class="dashboard-topbar">
+            <div>
+                <span class="dashboard-date-label">
+                    YOUR PERSONAL LEARNING SPACE
+                </span>
+                <p>Memory Care / My Courses</p>
+            </div>
+
+            <div class="profile-chip">
+                <div class="profile-avatar">
+                    {{ user.full_name[0]|upper }}
+                </div>
+                <div class="profile-info">
+                    <strong>{{ user.full_name }}</strong>
+                    <span>Learner</span>
+                </div>
+            </div>
+        </header>
+
+        <section class="learning-section mc-section">
+            <div class="learning-section-heading">
+                <div>
+                    <span class="dashboard-eyebrow">YOUR LEARNING LIBRARY</span>
+                    <h2>My Courses</h2>
+                    <p>Choose a course to explore its learning materials and assessments.</p>
+                </div>
+                <span class="mc-section-symbol">📚</span>
+            </div>
+
+            {% if courses %}
+                {% for course in courses %}
+                <article class="mc-course-card">
+
+                    <div class="mc-course-art">
+                        <span class="mc-course-art-symbol">✦</span>
+                        <span class="mc-course-art-label">MEMORY CARE</span>
+                        <div class="mc-course-book">M</div>
+                    </div>
+
+                    <div class="mc-course-content">
+                        <span class="mc-course-category">
+                            HEALTHCARE LEARNING
+                        </span>
+
+                        <h3>{{ course.title }}</h3>
+
+                        <p>
+                            {{ course.description or
+                               'Explore the course notes, learn each topic, and prepare for your assessment.' }}
+                        </p>      
+                    {% set progress = course_progress[course.id] %}
+
+                    <div class="mc-course-details">
+                        <span>
+                            {{ progress.completed_modules }} of
+                            {{ progress.total_modules }} modules completed
+                        </span>
+
+                        <span>80% pass mark</span>
+                    </div>
+
+                    <div class="mc-course-progress">
+                        <div class="mc-course-progress-heading">
+                            <span>Learning progress</span>
+                            <strong>{{ progress.percentage }}%</strong>
+                        </div>
+
+                        <div class="mc-course-progress-track"
+                             role="progressbar"
+                             aria-valuenow="{{ progress.percentage }}"
+                             aria-valuemin="0"
+                             aria-valuemax="100"
+                             aria-label="Course module completion">
+                            <div class="mc-course-progress-fill"
+                                 data-progress="{{ progress.percentage }}">
+                            </div>
+                        </div>
+
+                        <span class="mc-course-status
+                            {% if progress.status == 'Completed' %}is-completed
+                            {% elif progress.status == 'In Progress' %}is-in-progress
+                            {% else %}is-not-started{% endif %}">
+                            {{ progress.status }}
+                        </span>
+                    </div>
+
+                    {% if progress.last_module %}
+                        <p class="mc-course-last-visited">
+                            <strong>Pick up where you left off:</strong>
+                            {{ progress.last_module.title }}
+                        </p>
+                    {% else %}
+                        <p class="mc-course-last-visited">
+                            Start with your first learning module.
+                        </p>
+                    {% endif %}
+                        
+                    <div class="mc-course-actions">
+
+                        {% if progress.last_module %}
+                            <a href="{{ url_for('learner_module_notes', module_id=progress.last_module.id) }}"
+                               class="mc-primary-button">
+                                Continue Learning →
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('learner_course_modules', course_id=course.id) }}"
+                               class="mc-primary-button">
+                                Start Learning →
+                            </a>
+                        {% endif %}
+
+                        {% if progress.passed %}
+                            <span class="mc-secondary-button">
+                                ✓ Assessment Passed
+                            </span>
+                        {% else %}
+                            <a href="{{ url_for('learner_assessment') }}"
+                               class="mc-secondary-button">
+                                Start Assessment →
+                            </a>
+                        {% endif %}
+
+                        </div>
+                </article>
+                {% endfor %}
+            {% else %}
+                <article class="mc-study-card">
+                    <h3>No courses available yet</h3>
+                    <p>Your courses will appear here when they are added by the administrator.</p>
+                </article>
+            {% endif %}
+        </section>
+
+        <footer class="dashboard-footer">
+            <span>MEMORY CARE</span>
+            <p>Learn with purpose. Progress with confidence.</p>
+        </footer>
+    </main>
+
+<script>
+    // Course progress bars
+    document.querySelectorAll(".mc-course-progress-fill").forEach(function (bar) {
+        const percentage = Number(bar.dataset.progress);
+        bar.style.width = Math.max(0, Math.min(100, percentage)) + "%";
+    });
+
+    // Mobile sidebar
+    const menuButton = document.getElementById("dashboardMobileMenu");
+    const sidebar = document.getElementById("dashboardSidebar");
+    const overlay = document.getElementById("dashboardSidebarOverlay");
+
+    function openSidebar() {
+        document.body.classList.add("sidebar-open");
+        menuButton.setAttribute("aria-expanded", "true");
+        menuButton.setAttribute("aria-label", "Close navigation menu");
+        overlay.setAttribute("aria-hidden", "false");
+    }
+
+    function closeSidebar() {
+        document.body.classList.remove("sidebar-open");
+        menuButton.setAttribute("aria-expanded", "false");
+        menuButton.setAttribute("aria-label", "Open navigation menu");
+        overlay.setAttribute("aria-hidden", "true");
+    }
+
+    menuButton.addEventListener("click", function () {
+        if (document.body.classList.contains("sidebar-open")) {
+            closeSidebar();
+        } else {
+            openSidebar();
+        }
+    });
+
+    overlay.addEventListener("click", closeSidebar);
+
+    sidebar.querySelectorAll(".dashboard-nav-link").forEach(function (link) {
+        link.addEventListener("click", closeSidebar);
+    });
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") closeSidebar();
+    });
+
+    window.addEventListener("resize", function () {
+        if (window.innerWidth > 768) closeSidebar();
+    });
+</script>
+</body>
+</html>

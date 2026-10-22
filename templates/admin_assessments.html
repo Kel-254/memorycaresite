@@ -1,0 +1,155 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Manage Assessments | Memory Care</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="mc-admin-assessments-page">
+
+    <!-- Top-right Admin Dashboard button -->
+    <a href="{{ url_for('admin_dashboard') }}"
+       class="mc-assessments-dashboard-button">
+        ← Admin Dashboard
+    </a>
+
+    <main class="mc-admin-assessments-container">
+
+        <!-- Page Header -->
+        <header class="mc-admin-assessments-header">
+
+            <p class="mc-admin-assessments-eyebrow">
+                MEMORY CARE / ADMINISTRATION
+            </p>
+
+            <h1>
+                Manage <span>Assessments.</span>
+            </h1>
+
+            <p>
+                Create and manage the multiple-choice questions
+                learners answer at the end of their course.
+            </p>
+
+        </header>
+
+        <!-- Course Overview -->
+        <section class="mc-admin-assessments-intro">
+
+            <div>
+                <span class="mc-admin-assessments-label">
+                    QUESTION MANAGEMENT
+                </span>
+
+                <h2>Your Courses</h2>
+
+                <p>
+                    Select a course to add, edit or remove
+                    its assessment questions.
+                </p>
+            </div>
+
+            <div class="mc-admin-assessments-count">
+                <strong>{{ courses|length }}</strong>
+                <span>
+                    {% if courses|length == 1 %}
+                        Course
+                    {% else %}
+                        Courses
+                    {% endif %}
+                </span>
+            </div>
+
+        </section>
+
+        <!-- Course Cards -->
+        {% if courses %}
+
+            <section class="mc-admin-assessments-grid">
+
+                {% for course in courses %}
+
+                    <article class="mc-admin-assessment-card">
+
+                        <div class="mc-admin-assessment-icon">
+                            Q
+                        </div>
+
+                        <span class="mc-admin-assessment-tag">
+                            COURSE {{ loop.index }}
+                        </span>
+
+                        <h3>{{ course.title }}</h3>
+
+                        {% if course.description %}
+
+                            <p>{{ course.description }}</p>
+
+                        {% else %}
+
+                            <p>
+                                Manage the questions and answer options
+                                for this course's final assessment.
+                            </p>
+
+                        {% endif %}
+
+                        <!-- Opens this course's question-management page -->
+                        <a
+                            href="{{ url_for(
+                                'manage_assessment_questions',
+                                course_id=course.id
+                            ) }}"
+                            class="mc-admin-assessment-button">
+
+                            Manage Questions
+                            <span aria-hidden="true">→</span>
+
+                        </a>
+
+                    </article>
+
+                {% endfor %}
+
+            </section>
+
+        {% else %}
+
+            <!-- Empty State -->
+            <section class="mc-admin-assessments-empty">
+
+                <div class="mc-admin-assessment-icon">
+                    Q
+                </div>
+
+                <h2>No Courses Available</h2>
+
+                <p>
+                    Create a course before adding its assessment questions.
+                </p>
+
+            </section>
+
+        {% endif %}
+
+        <!-- Page Footer -->
+        <footer class="mc-admin-assessments-footer">
+
+            <span>MEMORY CARE</span>
+
+            <span>
+                Assessment Management · Pass Mark 80%
+            </span>
+
+        </footer>
+
+    </main>
+
+</body>
+</html>

@@ -1,0 +1,262 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Assessment Results | Memory Care</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+<body class="learner-dashboard mc-admin-results-page">
+
+    <main class="dashboard-main">
+
+        <!-- Back navigation above the heading card -->
+        <nav class="mc-admin-results-navigation">
+            <a
+                href="{{ url_for('admin_dashboard') }}"
+                class="mc-admin-results-back"
+            >
+                <span aria-hidden="true">←</span>
+                Back to Admin Dashboard
+            </a>
+        </nav>
+
+        <!-- Purple heading card -->
+        <header class="mc-admin-results-header">
+            <div>
+                <p class="mc-admin-results-eyebrow">
+                    MEMORY CARE · ADMIN PORTAL
+                </p>
+
+                <h1>Assessment Results</h1>
+
+                <p>
+                    Review learner performance, scores and assessment attempts.
+                </p>
+            </div>
+        </header>
+
+        <!-- Assessment summary -->
+        <section class="mc-admin-results-summary">
+
+            <article class="mc-admin-results-summary-card">
+                <span>Total Attempts</span>
+                <strong>{{ attempts|length }}</strong>
+            </article>
+
+            <article class="mc-admin-results-summary-card">
+                <span>Passed Attempts</span>
+                <strong>
+                    {{ attempts|selectattr('passed')|list|length }}
+                </strong>
+            </article>
+
+            <article class="mc-admin-results-summary-card">
+                <span>Failed Attempts</span>
+                <strong>
+                    {{ attempts|rejectattr('passed')|list|length }}
+                </strong>
+            </article>
+
+        </section>
+
+        <!-- Learner assessment history -->
+        <section class="mc-admin-results-table-section">
+            <div class="mc-admin-results-filters">
+                <div class="mc-admin-results-search">
+                    <label for="resultsSearch">Search learners</label>
+                    <input
+                        type="search"
+                        id="resultsSearch"
+                        placeholder="Search by name or email..."
+                    >
+                </div>
+
+                <div class="mc-admin-results-filter">
+                    <label for="resultFilter">Filter by result</label>
+                    <select id="resultFilter">
+                        <option value="all">All Results</option>
+                        <option value="passed">Passed</option>
+                        <option value="failed">Failed</option>
+                    </select>
+                </div>
+
+                <div class="mc-admin-results-filter">
+                    <label for="courseFilter">Filter by course</label>
+                    <select id="courseFilter">
+                        <option value="all">All Courses</option>
+                        {% for attempt in attempts %}
+                            <option value="{{ attempt.course.id }}">
+                                {{ attempt.course.title }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <p class="mc-admin-results-count" id="resultsCount" aria-live="polite">
+                Showing all assessment attempts
+            </p>
+
+            <div class="mc-admin-results-section-heading">
+                <h2>Learner Assessment History</h2>
+
+                <p>
+                    Each row represents one submitted attempt, including retakes.
+                </p>
+            </div>
+
+            {% if attempts %}
+
+                <div class="mc-admin-results-table-wrapper">
+
+                    <table class="mc-admin-results-table">
+
+                        <thead>
+                            <tr>
+                                <th>Learner</th>
+                                <th>Course</th>
+                                <th>Score</th>
+                                <th>Percentage</th>
+                                <th>Result</th>
+                                <th>Date Submitted</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for attempt in attempts %}
+
+                                <tr>
+                                    <td>
+                                        <strong>
+                                            {{ attempt.user.full_name }}
+                                        </strong>
+
+                                        <span class="mc-admin-results-email">
+                                            {{ attempt.user.email }}
+                                        </span>
+                                    </td>
+
+                                    <td data-course-id="{{ attempt.course.id }}">
+                                        {{ attempt.course.title }}
+                                    </td>
+
+                                    <td>
+                                        {{ attempt.score }} /
+                                        {{ attempt.total_questions }}
+                                    </td>
+
+                                    <td>
+                                        <strong>
+                                            {{ attempt.percentage }}%
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        {% if attempt.passed %}
+                                            <span class="mc-admin-result-badge passed">
+                                                Passed
+                                            </span>
+                                        {% else %}
+                                            <span class="mc-admin-result-badge failed">
+                                                Failed
+                                            </span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        {{ attempt.attempted_at.strftime('%d %b %Y, %H:%M') }}
+                                    </td>
+                                </tr>
+
+                            {% endfor %}
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            {% else %}
+
+                <div class="mc-admin-results-empty">
+                    <h3>No assessment results yet</h3>
+
+                    <p>
+                        Results will appear here after learners submit
+                        their assessments.
+                    </p>
+                </div>
+
+            {% endif %}
+
+        </section>
+
+    </main>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("resultsSearch");
+    const resultFilter = document.getElementById("resultFilter");
+    const resultsCount = document.getElementById("resultsCount");
+    const courseFilter = document.getElementById("courseFilter");
+    courseFilter.addEventListener("change", filterResults);
+
+    const tableRows = document.querySelectorAll(
+        ".mc-admin-results-table tbody tr"
+    );
+
+    function filterResults() {
+        const searchText = searchInput.value.toLowerCase().trim();
+        const selectedResult = resultFilter.value;
+        const selectedCourse = courseFilter.value;
+
+        let visibleCount = 0;
+
+        tableRows.forEach(function (row) {
+            const learnerName = row.cells[0].innerText.toLowerCase();
+            const courseName = row.cells[1].innerText.toLowerCase();
+            const resultText = row.cells[4].innerText.toLowerCase();
+
+            const matchesSearch =
+                learnerName.includes(searchText) ||
+                courseName.includes(searchText);
+
+            const matchesResult =
+               selectedResult === "all" ||
+               resultText.includes(selectedResult);
+
+            const courseId = row.cells[1].dataset.courseId;
+
+            const matchesCourse =
+                selectedCourse === "all" ||
+                courseId === selectedCourse;
+
+            const isVisible =
+                matchesSearch && matchesResult && matchesCourse;
+
+            row.style.display = isVisible ? "" : "none";
+
+            if (isVisible) {
+                visibleCount++;
+            }
+
+        });
+        resultsCount.textContent =
+            `Showing ${visibleCount} of ${tableRows.length} assessment attempts`;
+    }
+
+    searchInput.addEventListener("input", filterResults);
+    resultFilter.addEventListener("change", filterResults);
+});
+
+</script>
+
+</body>
+</html>

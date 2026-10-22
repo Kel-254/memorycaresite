@@ -1,0 +1,353 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Course Modules | Memory Care</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap"
+          rel="stylesheet">
+</head>
+
+<body class="learner-dashboard learner-home">
+    <button
+        type="button"
+        class="dashboard-mobile-menu"
+        id="dashboardMobileMenu"
+        aria-label="Open navigation menu"
+        aria-controls="dashboardSidebar"
+        aria-expanded="false">
+        <span aria-hidden="true">☰</span>
+    </button>
+
+    <aside class="dashboard-sidebar" id="dashboardSidebar">
+        <a href="{{ url_for('dashboard') }}" class="brand">
+            <span class="brand-mark">M</span>
+            <span class="brand-name">
+                Memory <strong>Care</strong>
+                <small>LEARNING PORTAL</small>
+            </span>
+        </a>
+
+        <div class="sidebar-caption">MY LEARNING</div>
+
+        <nav class="dashboard-nav">
+            <a href="{{ url_for('dashboard') }}"
+               class="dashboard-nav-link">
+                <span>⌂</span> Dashboard
+            </a>
+
+            <a href="{{ url_for('learner_courses') }}"
+               class="dashboard-nav-link">
+                <span>▤</span> My Courses
+            </a>
+
+            <a href="{{ url_for('learner_study_materials') }}"
+               class="dashboard-nav-link active">
+                <span>▣</span> Study Materials
+            </a>
+
+            <a href="{{ url_for('learner_assessment') }}"
+               class="dashboard-nav-link">
+                <span>✓</span> Assessments
+            </a>
+
+            <a href="{{ url_for('learner_progress') }}"
+               class="dashboard-nav-link">
+                <span>◷</span> Learning Progress
+            </a>
+
+            {% if user.is_admin %}
+            <a href="{{ url_for('admin_dashboard') }}"
+               class="dashboard-nav-link">
+                <span>⚙</span> Admin Portal
+            </a>
+            {% endif %}
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="sidebar-help">
+                <span class="help-star">✦</span>
+                <strong>Your learning journey</strong>
+                <p>Study, practise and build your knowledge one step at a time.</p>
+            </div>
+
+            <form method="POST" action="{{ url_for('logout') }}">
+                <input type="hidden" name="csrf_token"
+                       value="{{ csrf_token() }}">
+                <button type="submit" class="dashboard-logout">
+                    ↗ Sign out
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <main class="dashboard-main">
+        <div
+            class="dashboard-sidebar-overlay"
+            id="dashboardSidebarOverlay"
+            aria-hidden="true">
+        </div>
+
+        <header class="dashboard-topbar">
+            <div>
+                <span class="dashboard-date-label">
+                    YOUR PERSONAL LEARNING SPACE
+                </span>
+                <p>Memory Care / Study Materials</p>
+            </div>
+
+            <div class="profile-chip">
+                <div class="profile-avatar">
+                    {{ user.full_name[0]|upper }}
+                </div>
+                <div class="profile-info">
+                    <strong>{{ user.full_name }}</strong>
+                    <span>Learner</span>
+                </div>
+            </div>
+        </header>
+
+        <section class="learning-section mc-section">
+
+            <div class="mc-notes-back-row">
+                <a href="{{ url_for('learner_courses') }}"
+                   class="mc-notes-back-button">
+                    ← Back to My Courses
+                </a>
+            </div>
+
+            <div class="learning-section-heading">
+                <div>
+                    <span class="dashboard-eyebrow">
+                        MEMORY CARE · LEARNING PORTAL
+                    </span>
+
+                    <h2>{{ course.title }}</h2>
+
+                    <p>
+                        Explore each module and build your understanding
+                        of cognitive impairment and dementia care.
+                    </p>
+                </div>
+
+                <span class="mc-section-symbol">📖</span>
+            </div>
+
+            <section class="mc-learning-journey">
+                <div class="mc-learning-journey-icon">📖</div>
+
+                <div class="mc-learning-journey-copy">
+                    <span class="mc-learning-journey-label">
+                        YOUR LEARNING JOURNEY
+                    </span>
+
+                    <h2>Small steps. Stronger understanding.</h2>
+
+                    <p>
+                        Explore the modules in sequence and build your
+                        knowledge of compassionate memory care.
+                    </p>
+                </div>
+
+                <div class="mc-learning-count">
+                    <strong>{{ modules|length }}</strong>
+                    <span>MODULES</span>
+                </div>
+            </section>
+
+            <section class="mc-course-overview">
+
+                <div class="mc-overview-item">
+                    <div class="mc-overview-icon">📚</div>
+                    <div>
+                        <span class="mc-overview-label">YOUR COURSE</span>
+                        <strong>{{ modules|length }} Modules</strong>
+                        <p>Learn one topic at a time</p>
+                    </div>
+                </div>
+
+                <div class="mc-overview-divider"></div>
+
+                <div class="mc-overview-item">
+                    <div class="mc-overview-icon">✓</div>
+                    <div>
+                        <span class="mc-overview-label">ASSESSMENT</span>
+                        <strong>80% Pass Mark</strong>
+                        <p>Understand before you proceed</p>
+                    </div>
+                </div>
+
+            </section>
+
+            <aside class="mc-learning-tip">
+                <div class="mc-tip-icon">✦</div>
+
+                <div>
+                    <span class="mc-tip-label">A LITTLE LEARNING TIP</span>
+                    <p>
+                        Take your time with each topic. Understanding the
+                        person behind the condition is an important part
+                        of compassionate memory care.
+                    </p>
+                </div>
+            </aside>
+
+            <section class="mc-learner-modules-grid">
+
+                {% for module in modules %}
+
+                    <article class="mc-learner-module-card">
+
+                        <div class="mc-learner-module-image">
+
+                            {% if module.position == 1 %}
+                                <img
+                                    src="https://images.unsplash.com/photo-1773227060446-93239a553f1f?auto=format&fit=crop&w=900&q=80"
+                                    alt="Older adults spending time together in a care setting"
+                                    loading="lazy">
+
+                            {% elif module.position == 2 %}
+                                <img
+                                    src="https://images.unsplash.com/photo-1773227055624-07b515ba87c5?auto=format&fit=crop&w=900&q=80"
+                                    alt="Caregiver supporting an older woman"
+                                    loading="lazy">
+
+                            {% elif module.position == 3 %}
+                                <img
+                                    src="https://images.unsplash.com/photo-1773227055656-ec329ce9adac?auto=format&fit=crop&w=900&q=80"
+                                    alt="Older adults participating in a care activity"
+                                    loading="lazy">
+
+                            {% elif module.position == 4 %}
+                                <img
+                                    src="https://images.unsplash.com/photo-1773227060422-ee506b865417?auto=format&fit=crop&w=900&q=80"
+                                    alt="An older woman interacting with a caregiver"
+                                    loading="lazy">
+
+                            {% else %}
+                                <img
+                                    src="https://images.unsplash.com/photo-1773227060446-93239a553f1f?auto=format&fit=crop&w=900&q=80"
+                                    alt="Older adults in a care environment"
+                                    loading="lazy">
+                            {% endif %}
+
+                        </div>
+
+                        <div class="mc-learner-module-content">
+
+                            <span class="mc-learner-module-number">
+                                MODULE {{ module.position }}
+                            </span>
+
+                            <span class="mc-learner-topic-label">
+                                {% if module.position == 1 %}
+                                    FOUNDATIONS
+                                {% elif module.position == 2 %}
+                                    SYMPTOMS &amp; SIGNS
+                                {% elif module.position == 3 %}
+                                    TYPES OF DEMENTIA
+                                {% elif module.position == 4 %}
+                                    UNDERSTANDING CONFUSION
+                                {% else %}
+                                    LEARNING MODULE
+                                {% endif %}
+                            </span>
+
+                            <h2>{{ module.title }}</h2>
+
+                            <p>
+                                {{ module.description or
+                                   'Explore this topic and strengthen your knowledge of memory care.' }}
+                            </p>
+
+                            <a href="{{ url_for('learner_module_notes', module_id=module.id) }}"
+                               class="mc-learner-module-button">
+                                Open Module →
+                            </a>
+
+                        </div>
+
+                    </article>
+
+                {% else %}
+
+                    <div class="mc-learner-modules-empty">
+                        <h2>No modules available yet</h2>
+                        <p>
+                            Your course modules will appear here when
+                            they have been added by the administrator.
+                        </p>
+                    </div>
+
+                {% endfor %}
+
+            </section>
+
+        </section>
+
+        <footer class="dashboard-footer">
+            <span>MEMORY CARE</span>
+            <p>Learn with purpose. Progress with confidence.</p>
+        </footer>
+
+    </main>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const menuButton = document.getElementById("dashboardMobileMenu");
+    const sidebar = document.getElementById("dashboardSidebar");
+    const overlay = document.getElementById("dashboardSidebarOverlay");
+
+    if (!menuButton || !sidebar || !overlay) {
+        console.error("Memory Care mobile menu: required element not found.");
+        return;
+    }
+
+    function openSidebar() {
+        document.body.classList.add("sidebar-open");
+        menuButton.setAttribute("aria-expanded", "true");
+        menuButton.setAttribute("aria-label", "Close navigation menu");
+        overlay.setAttribute("aria-hidden", "false");
+    }
+
+    function closeSidebar() {
+        document.body.classList.remove("sidebar-open");
+        menuButton.setAttribute("aria-expanded", "false");
+        menuButton.setAttribute("aria-label", "Open navigation menu");
+        overlay.setAttribute("aria-hidden", "true");
+    }
+
+    menuButton.addEventListener("click", function () {
+        if (document.body.classList.contains("sidebar-open")) {
+            closeSidebar();
+        } else {
+            openSidebar();
+        }
+    });
+
+    overlay.addEventListener("click", closeSidebar);
+
+    sidebar.querySelectorAll("a").forEach(function (link) {
+        link.addEventListener("click", closeSidebar);
+    });
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+            closeSidebar();
+        }
+    });
+
+    window.addEventListener("resize", function () {
+        if (window.innerWidth > 768) {
+            closeSidebar();
+        }
+    });
+});
+</script>
+</body>
+</html>

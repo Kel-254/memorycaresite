@@ -1,0 +1,255 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Care | Manage Questions</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+<main class="questions-page">
+
+    <a href="{{ url_for('admin_assessments') }}" class="back-link">
+        ← Back to Assessments
+    </a>
+
+    <section class="questions-header">
+        <h1>Manage Assessment Questions</h1>
+        <p>{{ course.title }}</p>
+        <p>{{ questions|length }} question(s) saved</p>
+    </section>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="flash-message">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+    <!-- Add a question -->
+    <section class="question-panel">
+        <h2>Add a Question</h2>
+
+        <form method="POST"
+              action="{{ url_for('manage_assessment_questions', course_id=course.id) }}"
+              class="question-form">
+
+            <input type="hidden" name="csrf_token"
+                   value="{{ csrf_token() }}">
+
+            <div>
+                <label for="text">Question</label>
+                <textarea id="text" name="text" required></textarea>
+            </div>
+
+            <div>
+                <label for="option_a">Option A</label>
+                <input id="option_a" name="option_a" required>
+            </div>
+
+            <div>
+                <label for="option_b">Option B</label>
+                <input id="option_b" name="option_b" required>
+            </div>
+
+            <div>
+                <label for="option_c">Option C</label>
+                <input id="option_c" name="option_c" required>
+            </div>
+
+            <div>
+                <label for="option_d">Option D</label>
+                <input id="option_d" name="option_d" required>
+            </div>
+
+            <div>
+                <label for="correct_answer">Correct Answer</label>
+                <select id="correct_answer" name="correct_answer" required>
+                    <option value="">Select the correct option</option>
+                    <option value="A">Option A</option>
+                    <option value="B">Option B</option>
+                    <option value="C">Option C</option>
+                    <option value="D">Option D</option>
+                </select>
+            </div>
+
+            <button type="submit" class="save-question-button">
+                Save Question
+            </button>
+        </form>
+    </section>
+
+    <!-- Saved questions -->
+    <section class="question-panel">
+        <h2>Saved Questions</h2>
+
+        {% if questions %}
+            {% for question in questions %}
+                <article class="saved-question">
+
+                    <h3>
+                        Question {{ loop.index }}:
+                        {{ question.text }}
+                    </h3>
+
+                    <ol type="A">
+                        <li>{{ question.option_a }}</li>
+                        <li>{{ question.option_b }}</li>
+                        <li>{{ question.option_c }}</li>
+                        <li>{{ question.option_d }}</li>
+                    </ol>
+
+                    <p>
+                        <strong>Correct answer:</strong>
+                        {{ question.correct_answer }}
+                    </p>
+
+                    <div class="question-actions">
+                        <button
+                            type="button"
+                            class="edit-question-button"
+                            data-question-id="{{ question.id }}">
+                            ✏️ Edit Question
+                        </button>
+
+                        <form
+                            method="POST"
+                            action="{{ url_for('delete_assessment_question', question_id=question.id) }}"
+                            onsubmit="return confirm('Are you sure you want to delete this question? This cannot be undone.');">
+
+                            <input type="hidden"
+                                   name="csrf_token"
+                                   value="{{ csrf_token() }}">
+
+                            <button type="submit"
+                                    class="delete-question-button">
+                                🗑 Delete Question
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Inline edit form -->
+                    <div id="edit-form-{{ question.id }}"
+                         class="inline-edit-form"
+                         hidden>
+
+                        <h4>Edit Question</h4>
+
+                        <form
+                            method="POST"
+                            action="{{ url_for('edit_assessment_question', question_id=question.id) }}"
+                            class="question-form">
+
+                            <input type="hidden"
+                                   name="csrf_token"
+                                   value="{{ csrf_token() }}">
+
+                            <div>
+                                <label for="edit-text-{{ question.id }}">
+                                    Question
+                                </label>
+                                <textarea
+                                    id="edit-text-{{ question.id }}"
+                                    name="text"
+                                    required>{{ question.text }}</textarea>
+                            </div>
+
+                            <div>
+                                <label for="edit-a-{{ question.id }}">Option A</label>
+                                <input id="edit-a-{{ question.id }}"
+                                       type="text"
+                                       name="option_a"
+                                       value="{{ question.option_a }}"
+                                       required>
+                            </div>
+
+                            <div>
+                                <label for="edit-b-{{ question.id }}">Option B</label>
+                                <input id="edit-b-{{ question.id }}"
+                                       type="text"
+                                       name="option_b"
+                                       value="{{ question.option_b }}"
+                                       required>
+                            </div>
+
+                            <div>
+                                <label for="edit-c-{{ question.id }}">Option C</label>
+                                <input id="edit-c-{{ question.id }}"
+                                       type="text"
+                                       name="option_c"
+                                       value="{{ question.option_c }}"
+                                       required>
+                            </div>
+
+                            <div>
+                                <label for="edit-d-{{ question.id }}">Option D</label>
+                                <input id="edit-d-{{ question.id }}"
+                                       type="text"
+                                       name="option_d"
+                                       value="{{ question.option_d }}"
+                                       required>
+                            </div>
+
+                            <div>
+                                <label for="edit-answer-{{ question.id }}">
+                                    Correct Answer
+                                </label>
+
+                                <select id="edit-answer-{{ question.id }}"
+                                        name="correct_answer"
+                                        required>
+                                    <option value="A" {% if question.correct_answer == 'A' %}selected{% endif %}>Option A</option>
+                                    <option value="B" {% if question.correct_answer == 'B' %}selected{% endif %}>Option B</option>
+                                    <option value="C" {% if question.correct_answer == 'C' %}selected{% endif %}>Option C</option>
+                                    <option value="D" {% if question.correct_answer == 'D' %}selected{% endif %}>Option D</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="save-question-button">
+                                Save Changes
+                            </button>
+
+                            <button
+                                type="button"
+                                class="cancel-edit-button"
+                                data-question-id="{{ question.id }}">
+                                Cancel
+                            </button>
+                        </form>
+                    </div>
+
+                </article>
+            {% endfor %}
+        {% else %}
+            <p>No questions have been added to this course yet.</p>
+        {% endif %}
+    </section>
+
+</main>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(
+        ".edit-question-button, .cancel-edit-button"
+    ).forEach(function (button) {
+        button.addEventListener("click", function () {
+            const questionId = this.dataset.questionId;
+            const editForm = document.getElementById(
+                "edit-form-" + questionId
+            );
+
+            if (editForm) {
+                editForm.hidden = !editForm.hidden;
+            }
+        });
+    });
+});
+</script>
+
+</body>
+</html>

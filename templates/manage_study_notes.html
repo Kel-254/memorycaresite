@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Memory Care | Study Notes</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="manage-modules-page">
+
+<main class="manage-modules-container">
+
+    <!-- PAGE HEADER -->
+    <header class="manage-modules-header">
+
+        <a href="{{ url_for('manage_modules', course_id=module.course_id) }}"
+           class="back-link">
+            &larr; Back to Modules
+        </a>
+
+        <p class="manage-modules-eyebrow">
+            MEMORY CARE · ADMIN PORTAL
+        </p>
+
+        <h1>Study <span>Notes</span></h1>
+
+        <p class="manage-modules-intro">
+            Create, format, edit, and organize learning materials for your learners.
+        </p>
+
+    </header>
+
+
+    <!-- FLASH MESSAGES -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="study-flash {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+
+    <!-- SELECTED MODULE -->
+    <section class="study-module-summary">
+
+        <span class="course-label">SELECTED MODULE</span>
+
+        <h2>{{ module.title }}</h2>
+
+        <p>
+            {{ module.description or
+               "Add learning materials to this module." }}
+        </p>
+
+        <span class="study-notes-count">
+            {{ notes|length }} study note(s)
+        </span>
+
+    </section>
+
+
+    <!-- SAVED STUDY NOTES -->
+    <section class="study-panel" id="notes-list">
+
+        <div class="study-panel-heading">
+            <h2>Learning Materials</h2>
+            <p>Review and manage the notes saved under this module.</p>
+        </div>
+
+        {% if notes %}
+
+            <ol class="study-notes-list">
+
+                {% for note in notes %}
+
+                    <li class="study-note-item"
+                        id="note-{{ note.id }}">
+
+                        <h3>
+                            <span class="study-note-number">
+                                {{ loop.index }}
+                            </span>
+                            {{ note.title }}
+                        </h3>
+
+                        <div class="study-note-preview">
+                            {{ note.content|striptags|truncate(220) }}
+                        </div>
+
+                        <!-- EDIT AND DELETE -->
+                        <div class="study-note-actions">
+
+                            <a href="#edit-note-{{ note.id }}"
+                               class="note-edit-button">
+                                Edit Note
+                            </a>
+
+                            <form method="POST"
+                                  action="{{ url_for('manage_study_notes', module_id=module.id) }}"
+                                  onsubmit="return confirm('Are you sure you want to delete this study note?');">
+
+                                <input type="hidden"
+                                       name="csrf_token"
+                                       value="{{ csrf_token() }}">
+
+                                <input type="hidden"
+                                       name="action"
+                                       value="delete">
+
+                                <input type="hidden"
+                                       name="note_id"
+                                       value="{{ note.id }}">
+
+                                <button type="submit"
+                                        class="note-delete-button">
+                                    Delete Note
+                                </button>
+
+                            </form>
+
+                        </div>
+
+
+                        <!-- EDIT NOTE FORM -->
+                        <form method="POST"
+                              action="{{ url_for('manage_study_notes', module_id=module.id) }}"
+                              class="note-edit-form study-note-edit-form"
+                              id="edit-note-{{ note.id }}">
+
+                            <input type="hidden"
+                                   name="csrf_token"
+                                   value="{{ csrf_token() }}">
+
+                            <input type="hidden"
+                                   name="action"
+                                   value="edit">
+
+                            <input type="hidden"
+                                   name="note_id"
+                                   value="{{ note.id }}">
+
+                            <div class="study-form-group">
+
+                                <label for="title-{{ note.id }}">
+                                    Note Title
+                                </label>
+
+                                <input type="text"
+                                       id="title-{{ note.id }}"
+                                       name="title"
+                                       value="{{ note.title }}"
+                                       maxlength="200"
+                                       required>
+
+                            </div>
+
+
+                            <div class="study-form-group">
+
+                                <label for="edit-content-{{ note.id }}">
+                                    Study Note Content
+                                </label>
+
+                                <div class="study-editor">
+
+                                    <div class="study-editor-toolbar">
+
+                                        <select class="editor-format"
+                                                aria-label="Text style"
+                                                onchange="formatStudyText('edit-content-{{ note.id }}', this.value); this.value='';">
+                                            <option value="">Paragraph style</option>
+                                            <option value="h2">Heading</option>
+                                            <option value="h3">Subheading</option>
+                                            <option value="p">Normal text</option>
+                                        </select>
+
+                                        <span class="editor-divider"></span>
+
+                                        <button type="button"
+                                                class="editor-tool"
+                                                title="Bold"
+                                                onclick="formatStudyText('edit-content-{{ note.id }}', 'bold')">
+                                            <b>B</b>
+                                        </button>
+
+                                        <button type="button"
+                                                class="editor-tool"
+                                                title="Italic"
+                                                onclick="formatStudyText('edit-content-{{ note.id }}', 'italic')">
+                                            <i>I</i>
+                                        </button>
+
+                                        <button type="button"
+                                                class="editor-tool"
+                                                title="Underline"
+                                                onclick="formatStudyText('edit-content-{{ note.id }}', 'underline')">
+                                            <u>U</u>
+                                        </button>
+
+                                        <span class="editor-divider"></span>
+
+                                        <button type="button"
+                                                class="editor-tool"
+                                                title="Bulleted list"
+                                                onclick="formatStudyText('edit-content-{{ note.id }}', 'insertUnorderedList')">
+                                            • List
+                                        </button>
+
+                                        <button type="button"
+                                                class="editor-tool"
+                                                title="Numbered list"
+                                                onclick="formatStudyText('edit-content-{{ note.id }}', 'insertOrderedList')">
+                                            1. List
+                                        </button>
+
+                                        <span class="editor-divider"></span>
+
+                                        <button type="button"
+                                                class="editor-tool"
+                                                title="Align left"
+                                                onclick="formatStudyText('edit-content-{{ note.id }}', 'justifyLeft')">
+                                            ≡
+                                        </button>
+
+                                        <button type="button"
+                                                class="editor-tool"
+                                                title="Align center"
+                                                onclick="formatStudyText('edit-content-{{ note.id }}', 'justifyCenter')">
+                                            ≡
+                                        </button>
+
+                                    </div>
+
+                                    <div id="edit-content-{{ note.id }}"
+                                         class="study-editor-content"
+                                         contenteditable="true"
+                                         role="textbox"
+                                         aria-label="Edit study note content"
+                                         aria-multiline="true"
+                                         data-placeholder="Write your study notes here..."></div>
+
+                                    <textarea class="study-editor-storage"
+                                              name="content"
+                                              id="edit-storage-{{ note.id }}"
+                                              hidden
+                                              required>{{ note.content }}</textarea>
+
+                                </div>
+
+                                <p class="editor-help-text">
+                                    Select text and use the toolbar to format your notes.
+                                </p>
+
+                            </div>
+
+
+                            <div class="study-form-actions">
+
+                                <button type="submit"
+                                        class="study-save-button">
+                                    Save Changes
+                                </button>
+
+                                <a href="#note-{{ note.id }}"
+                                   class="study-cancel-button">
+                                    Cancel
+                                </a>
+
+                            </div>
+
+                        </form>
+
+                    </li>
+
+                {% endfor %}
+
+            </ol>
+
+        {% else %}
+
+            <div class="study-empty-state">
+
+                <h3>No study notes yet</h3>
+
+                <p>
+                    Start building this module's learning materials
+                    using the editor below.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- ADD NEW STUDY NOTE -->
+    <section class="study-panel" id="add-study-note">
+
+        <div class="study-panel-heading">
+            <h2>Add Study Note</h2>
+            <p>
+                Prepare clear, well-organized learning materials for your learners.
+            </p>
+        </div>
+
+        <form method="POST"
+              action="{{ url_for('manage_study_notes', module_id=module.id) }}"
+              id="addStudyNoteForm">
+
+            <input type="hidden"
+                   name="csrf_token"
+                   value="{{ csrf_token() }}">
+
+            <div class="study-form-group">
+
+                <label for="noteTitle">Note Title</label>
+
+                <input type="text"
+                       id="noteTitle"
+                       name="title"
+                       maxlength="200"
+                       placeholder="e.g. Signs of Normal Aging"
+                       required>
+
+            </div>
+
+
+            <div class="study-form-group">
+
+                <label for="noteContent">Study Note Content</label>
+
+                <div class="study-editor">
+
+                    <!-- FORMATTING TOOLBAR -->
+                    <div class="study-editor-toolbar">
+
+                        <select class="editor-format"
+                                aria-label="Text style"
+                                onchange="formatStudyText('noteContent', this.value); this.value='';">
+                            <option value="">Paragraph style</option>
+                            <option value="h2">Heading</option>
+                            <option value="h3">Subheading</option>
+                            <option value="p">Normal text</option>
+                        </select>
+
+                        <span class="editor-divider"></span>
+
+                        <button type="button"
+                                class="editor-tool"
+                                title="Bold"
+                                aria-label="Bold"
+                                onclick="formatStudyText('noteContent', 'bold')">
+                            <b>B</b>
+                        </button>
+
+                        <button type="button"
+                                class="editor-tool"
+                                title="Italic"
+                                aria-label="Italic"
+                                onclick="formatStudyText('noteContent', 'italic')">
+                            <i>I</i>
+                        </button>
+
+                        <button type="button"
+                                class="editor-tool"
+                                title="Underline"
+                                aria-label="Underline"
+                                onclick="formatStudyText('noteContent', 'underline')">
+                            <u>U</u>
+                        </button>
+
+                        <span class="editor-divider"></span>
+
+                        <button type="button"
+                                class="editor-tool"
+                                title="Bulleted list"
+                                aria-label="Bulleted list"
+                                onclick="formatStudyText('noteContent', 'insertUnorderedList')">
+                            • List
+                        </button>
+
+                        <button type="button"
+                                class="editor-tool"
+                                title="Numbered list"
+                                aria-label="Numbered list"
+                                onclick="formatStudyText('noteContent', 'insertOrderedList')">
+                            1. List
+                        </button>
+
+                        <span class="editor-divider"></span>
+
+                        <button type="button"
+                                class="editor-tool"
+                                title="Align left"
+                                aria-label="Align left"
+                                onclick="formatStudyText('noteContent', 'justifyLeft')">
+                            ≡
+                        </button>
+
+                        <button type="button"
+                                class="editor-tool"
+                                title="Align center"
+                                aria-label="Align center"
+                                onclick="formatStudyText('noteContent', 'justifyCenter')">
+                            ≡
+                        </button>
+
+                    </div>
+
+
+                    <!-- DOCUMENT WRITING AREA -->
+                    <div id="noteContent"
+                         class="study-editor-content"
+                         contenteditable="true"
+                         role="textbox"
+                         aria-label="Study note content"
+                         aria-multiline="true"
+                         data-placeholder="Write or paste your study notes here. Use headings and lists to organize the material..."></div>
+
+
+                    <!-- FORM VALUE SENT TO FLASK -->
+                    <textarea id="noteContentStorage"
+                              name="content"
+                              class="study-editor-storage"
+                              hidden></textarea>
+
+                </div>
+
+                <p class="editor-help-text">
+                    Use headings for topics and bullet points for important facts.
+                </p>
+
+            </div>
+
+
+            <div class="study-form-actions">
+
+                <button type="submit"
+                        class="study-save-button">
+                    Save Study Note
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer class="admin-footer">
+        Memory Care · Study Notes Management
+    </footer>
+
+</main>
+
+
+<script>
+    /* FORMAT SELECTED TEXT */
+    function formatStudyText(editorId, command) {
+        if (!command) return;
+
+        const editor = document.getElementById(editorId);
+        if (!editor) return;
+
+        editor.focus();
+
+        if (["h2", "h3", "p"].includes(command)) {
+            document.execCommand("formatBlock", false, command);
+        } else {
+            document.execCommand(command, false, null);
+        }
+    }
+
+    /* COPY EDITOR CONTENT BEFORE SAVING */
+    function prepareStudyNoteForm(form) {
+        const editors = form.querySelectorAll(
+            '.study-editor-content[contenteditable="true"]'
+        );
+
+        if (!editors.length) {
+            console.error("No editable study notes editor found in this form.");
+            alert("The study notes editor could not be found. Please refresh the page.");
+            return false;
+        }
+
+        for (const editor of editors) {
+            const storageId = editor.id === "noteContent"
+                ? "noteContentStorage"
+                : editor.id.replace("edit-content-", "edit-storage-");
+
+            const storage = document.getElementById(storageId);
+
+            if (!storage) {
+                console.error("Storage field not found:", storageId);
+                alert("The notes storage field could not be found. Please contact the administrator.");
+                return false;
+            }
+
+            if (!editor.innerText.trim()) {
+                alert("Please enter some study note content before saving.");
+                editor.focus();
+                return false;
+            }
+
+            storage.value = editor.innerHTML.trim();
+        }
+
+        return true;
+    }
+
+    /* INITIALIZE EDITORS AND HANDLE FORM SUBMISSION */
+    document.addEventListener("DOMContentLoaded", function () {
+
+        document.querySelectorAll(".study-note-edit-form").forEach(function (form) {
+            const editor = form.querySelector(".study-editor-content");
+            const storage = form.querySelector('textarea[name="content"]');
+
+            if (editor && storage) {
+                editor.innerHTML = storage.value;
+            }
+
+            form.addEventListener("submit", function (event) {
+                if (!prepareStudyNoteForm(form)) {
+                    event.preventDefault();
+                }
+            });
+        });
+
+        const addForm = document.getElementById("addStudyNoteForm");
+
+        if (addForm) {
+            addForm.addEventListener("submit", function (event) {
+                if (!prepareStudyNoteForm(addForm)) {
+                    event.preventDefault();
+                    return;
+                }
+
+                console.log("Study notes content prepared for saving.");
+            });
+        }
+    });
+</script>
+
+
+</body>
+</html>

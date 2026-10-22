@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Administrator Setup | Memory Care</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: linear-gradient(135deg, #FBF7FF, #EEE3FF);
+            font-family: Arial, sans-serif;
+            color: #302044;
+        }
+
+        .setup-card {
+            width: 100%;
+            max-width: 460px;
+            padding: 34px;
+            background: #FFFEFF;
+            border: 1px solid #E5D6F8;
+            border-radius: 20px;
+            box-shadow: 0 14px 35px rgba(74, 35, 110, 0.12);
+        }
+
+        .brand {
+            margin-bottom: 8px;
+            color: #673AB7;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 0 0 10px;
+            color: #432467;
+            font-size: 28px;
+        }
+
+        .intro {
+            margin-bottom: 24px;
+            color: #756982;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 17px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid #D9C9EC;
+            border-radius: 9px;
+            background: #FFFFFF;
+            color: #302044;
+            font-size: 15px;
+        }
+
+        input:focus {
+            outline: 2px solid #B99AE9;
+            border-color: #8054C7;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 8px;
+            padding: 14px;
+            border: none;
+            border-radius: 9px;
+            background: #673AB7;
+            color: #FFFFFF;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #542A9E;
+        }
+
+        .flash {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .flash.error {
+            background: #FFF0F0;
+            color: #9B2226;
+            border: 1px solid #F4CCCC;
+        }
+
+        .flash.success {
+            background: #EDF9F0;
+            color: #236B3B;
+            border: 1px solid #C6E8CF;
+        }
+
+        .security-note {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #EDE4F5;
+            color: #857991;
+            font-size: 12px;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        @media (max-width: 480px) {
+            .setup-card {
+                padding: 25px 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="setup-card">
+
+        <div class="brand">Memory Care</div>
+
+        <h1>Administrator Setup</h1>
+
+        <p class="intro">
+            Create your administrator account to manage courses,
+            modules, study notes, learners, and assessments.
+            Your account will also have access to the learner dashboard.
+        </p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="flash {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+
+        <form method="POST" autocomplete="on">
+
+            <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}"
+            >
+
+            <div class="form-group">
+                <label for="setup_key">Administrator Setup Key</label>
+                <input
+                    type="password"
+                    id="setup_key"
+                    name="setup_key"
+                    autocomplete="off"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="full_name">Full Name</label>
+                <input
+                    type="text"
+                    id="full_name"
+                    name="full_name"
+                    maxlength="100"
+                    autocomplete="name"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    maxlength="120"
+                    autocomplete="email"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">Create Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    minlength="8"
+                    autocomplete="new-password"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_password">Confirm Password</label>
+                <input
+                    type="password"
+                    id="confirm_password"
+                    name="confirm_password"
+                    minlength="8"
+                    autocomplete="new-password"
+                    required
+                >
+            </div>
+
+            <button type="submit">
+                Create Administrator Account
+            </button>
+
+        </form>
+
+        <div class="security-note">
+            This page is intended for the authorized initial
+            administrator setup. Keep your setup key private.
+        </div>
+
+    </main>
+</body>
+</html>
