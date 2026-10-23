@@ -1105,6 +1105,71 @@ def admin_dashboard():
     )
 
 
+# -------------------------
+# CREATE CLIENT ADMINISTRATOR
+# -------------------------
+
+@app.route(
+    "/admin/create-administrator",
+    methods=["GET", "POST"]
+)
+@admin_required
+def create_client_administrator():
+    if request.method == "POST":
+        full_name = request.form.get("full_name", "").strip()
+        email = request.form.get("email", "").strip().lower()
+        password = request.form.get("password", "")
+        confirm_password = request.form.get("confirm_password", "")
+
+        if not full_name or not email or not password:
+            flash("Please complete all required fields.", "error")
+            return render_template("admin_create_administrator.html")
+
+        if len(full_name) > 100 or len(email) > 120:
+            flash("Your name or email address is too long.", "error")
+            return render_template("admin_create_administrator.html")
+
+        if "@" not in email or "." not in email.rsplit("@", 1)[-1]:
+            flash("Please enter a valid email address.", "error")
+            return render_template("admin_create_administrator.html")
+
+        if len(password) < 12:
+            flash("Password must contain at least 12 characters.", "error")
+            return render_template("admin_create_administrator.html")
+
+        if password != confirm_password:
+            flash("The passwords do not match.", "error")
+            return render_template("admin_create_administrator.html")
+
+        existing_user = db.session.execute(
+            db.select(User).filter_by(email=email)
+        ).scalar_one_or_none()
+
+        if existing_user:
+            flash("An account with this email already exists.", "error")
+            return render_template("admin_create_administrator.html")
+
+        client_admin = User(
+            full_name=full_name,
+            email=email,
+            role="admin",
+            email_verified=False
+        )
+        client_admin.set_password(password)
+
+        try:
+            db.session.add(client_admin)
+            db.session.commit()
+            flash("Client administrator created successfully.", "success")
+            return redirect(url_for("admin_dashboard"))
+        except Exception:
+            db.session.rollback()
+            app.logger.exception("Client administrator creation failed")
+            flash("Could not create the account. Please try again.", "error")
+
+    return render_template("admin_create_administrator.html")
+
+
 @app.route("/admin/assessment-results")
 @admin_required
 def admin_assessment_results():

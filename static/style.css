@@ -14293,3 +14293,201 @@ body.mc-results-page .mc-result-card {
         max-width: 430px !important;
     }
 }
+
+/* =========================================
+   CREATE CLIENT ADMINISTRATOR
+   Memory Care | Static 3D styling
+========================================= */
+
+.mc-create-admin-body {
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'DM Sans', sans-serif;
+    color: #352447;
+    background:
+        radial-gradient(
+            circle at top left,
+            rgba(221, 198, 250, 0.65),
+            transparent 38%
+        ),
+        linear-gradient(135deg, #FBF7FF, #FFF9F0);
+}
+
+.mc-create-admin-page {
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: 40px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mc-create-admin-card {
+    width: 100%;
+    max-width: 620px;
+    box-sizing: border-box;
+    padding: 36px;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid #E9DDF8;
+    border-radius: 24px;
+    box-shadow:
+        0 10px 0 #E6D8F4,
+        0 22px 45px rgba(76, 29, 149, 0.12);
+}
+
+.mc-create-admin-back {
+    display: inline-block;
+    margin-bottom: 28px;
+    color: #6D28D9;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.mc-create-admin-back:hover {
+    color: #4C1D95;
+}
+
+.mc-create-admin-heading {
+    margin-bottom: 28px;
+}
+
+.mc-create-admin-eyebrow {
+    display: inline-block;
+    margin-bottom: 10px;
+    color: #7C3AED;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+}
+
+.mc-create-admin-title {
+    margin: 0 0 10px;
+    color: #4C1D95;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(27px, 5vw, 35px);
+    line-height: 1.2;
+}
+
+.mc-create-admin-description {
+    margin: 0;
+    color: #746580;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.mc-create-admin-form {
+    display: flex;
+    flex-direction: column;
+    gap: 19px;
+}
+
+.mc-create-admin-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mc-create-admin-field label {
+    color: #44315D;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.mc-create-admin-field input {
+    width: 100%;
+    min-height: 47px;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    border: 1px solid #D8C9EA;
+    border-radius: 11px;
+    background: #FFFEFF;
+    color: #30213F;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+}
+
+.mc-create-admin-field input::placeholder {
+    color: #A195B0;
+}
+
+.mc-create-admin-field input:focus {
+    border-color: #7C3AED;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+}
+
+.mc-create-admin-button {
+    width: 100%;
+    min-height: 49px;
+    margin-top: 5px;
+    padding: 13px 18px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #7C3AED, #5B21B6);
+    color: #FFFFFF;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 5px 0 #452080;
+}
+
+.mc-create-admin-button:hover {
+    background: linear-gradient(135deg, #6D28D9, #4C1D95);
+}
+
+.mc-create-admin-button:active {
+    box-shadow: 0 2px 0 #452080;
+}
+
+.mc-create-admin-note {
+    margin-top: 25px;
+    padding: 15px 16px;
+    border: 1px solid #E8D9FA;
+    border-radius: 12px;
+    background: #F7F0FF;
+    color: #5B3B7D;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.mc-create-admin-note strong {
+    color: #4C1D95;
+}
+
+.mc-create-admin-note p {
+    margin: 5px 0 0;
+}
+
+.mc-create-admin-message {
+    margin-bottom: 18px;
+    padding: 12px 14px;
+    border: 1px solid #FECACA;
+    border-radius: 10px;
+    background: #FFF1F2;
+    color: #9F1239;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.mc-create-admin-message.success {
+    border-color: #BBF7D0;
+    background: #F0FDF4;
+    color: #166534;
+}
+
+@media (max-width: 520px) {
+    .mc-create-admin-page {
+        padding: 24px 14px;
+    }
+
+    .mc-create-admin-card {
+        padding: 25px 19px;
+        border-radius: 19px;
+    }
+
+    .mc-create-admin-title {
+        font-size: 28px;
+    }
+}

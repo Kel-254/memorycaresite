@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Memory Care | Create Administrator</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+          rel="stylesheet">
+</head>
+
+<body class="mc-create-admin-body">
+
+    <main class="mc-create-admin-page">
+
+        <section class="mc-create-admin-card">
+
+            <a class="mc-create-admin-back"
+               href="{{ url_for('admin_dashboard') }}">
+                &larr; Back to Admin Dashboard
+            </a>
+
+            <div class="mc-create-admin-heading">
+                <span class="mc-create-admin-eyebrow">
+                    ADMINISTRATION
+                </span>
+
+                <h1 class="mc-create-admin-title">
+                    Create Administrator
+                </h1>
+
+                <p class="mc-create-admin-description">
+                    Create a secure administrator account for your client.
+                </p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="mc-create-admin-message {{ category }}"
+                             role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST"
+                  action="{{ url_for('create_client_administrator') }}"
+                  class="mc-create-admin-form">
+
+                <input type="hidden"
+                       name="csrf_token"
+                       value="{{ csrf_token() }}">
+
+                <div class="mc-create-admin-field">
+                    <label for="full_name">
+                        Client's Full Name
+                    </label>
+
+                    <input type="text"
+                           id="full_name"
+                           name="full_name"
+                           maxlength="100"
+                           autocomplete="name"
+                           placeholder="Enter full name"
+                           required>
+                </div>
+
+                <div class="mc-create-admin-field">
+                    <label for="email">
+                        Client's Email Address
+                    </label>
+
+                    <input type="email"
+                           id="email"
+                           name="email"
+                           maxlength="120"
+                           autocomplete="email"
+                           placeholder="client@example.com"
+                           required>
+                </div>
+
+                <div class="mc-create-admin-field">
+                    <label for="password">
+                        Temporary Password
+                    </label>
+
+                    <input type="password"
+                           id="password"
+                           name="password"
+                           minlength="12"
+                           autocomplete="new-password"
+                           placeholder="At least 12 characters"
+                           required>
+                </div>
+
+                <div class="mc-create-admin-field">
+                    <label for="confirm_password">
+                        Confirm Password
+                    </label>
+
+                    <input type="password"
+                           id="confirm_password"
+                           name="confirm_password"
+                           minlength="12"
+                           autocomplete="new-password"
+                           placeholder="Enter password again"
+                           required>
+                </div>
+
+                <button type="submit"
+                        class="mc-create-admin-button">
+                    Create Client Administrator
+                </button>
+
+            </form>
+
+            <div class="mc-create-admin-note">
+                <strong>Security reminder</strong>
+                <p>
+                    Only logged-in administrators can access this page.
+                    Use a unique password and share it privately with your
+                    client.
+                </p>
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+</html>
